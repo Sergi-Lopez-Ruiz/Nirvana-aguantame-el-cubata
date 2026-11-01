@@ -47,6 +47,7 @@ jobs:
       - name: Generate multilingual website with book downloads
         env:
           SITE_VERSION: ${{ github.event.release.tag_name || 'Borrador' }}
+          REQUIRE_DISCUSSIONS: '1'
         run: python site/build.py
       - name: Verify all web download links and files
         run: |

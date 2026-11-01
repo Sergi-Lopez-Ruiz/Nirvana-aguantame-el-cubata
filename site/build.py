@@ -40,6 +40,34 @@ def discussion_url(lang: str, number: int) -> str | None:
     return DISCUSSIONS.get("pages", {}).get(lang, {}).get(route(number))
 
 
+def verify_discussions(all_docs: dict) -> None:
+    """Never publish chapter links that silently fall back to the forum index.
+
+    Enabled in GitHub Actions after site/sync_discussions.py has created the threads.
+    Local builds can still be used without a GitHub token or a discussion manifest.
+    """
+    if os.getenv("REQUIRE_DISCUSSIONS") != "1":
+        return
+    missing = []
+    invalid = []
+    for lang, chapters in all_docs.items():
+        for number in chapters:
+            url = discussion_url(lang, number)
+            key = f"{lang}/{route(number)}"
+            if not url:
+                missing.append(key)
+            elif not re.fullmatch(re.escape(REPO_URL) + r"/discussions/[1-9]\d*/?", url):
+                invalid.append(f"{key}: {url}")
+    if missing or invalid:
+        details = []
+        if missing:
+            details.append("Missing discussion URLs: " + ", ".join(missing))
+        if invalid:
+            details.append("Invalid discussion URLs: " + "; ".join(invalid))
+        raise RuntimeError("GitHub Discussions mapping incomplete. " + " | ".join(details)
+                           + ". Check the preceding 'Find or create one GitHub Discussion per chapter' step.")
+
+
 UI = {
  "es": {
   "subtitle":"Una exploración abierta y revisable del Dharma", "home":"Inicio", "contents":"Índice", "read":"Empezar a leer", "chapters":"Capítulos disponibles", "about":"Este proyecto", "about_text":"Una interpretación del Dharma como modelo para explorar la experiencia, abierta a preguntas, críticas y revisiones.", "unfinished":"Texto en desarrollo: no es una edición definitiva.", "change":"Debatir y proponer", "source":"Ver fuente Markdown", "previous":"Anterior", "next":"Siguiente", "in_progress":"Traducción en preparación", "in_progress_text":"Todavía no hay capítulos publicados en este idioma. Puedes leer la edición original en español.", "missing_translation":"No disponible en este idioma", "part-1":"Agradecimientos", "part0":"Prólogo", "part1":"I · Aprender a mirar", "part2":"II · Un mapa del Dharma", "part3":"III · Aprender a caminar", "part4":"IV · Explorar la experiencia", "part5":"V · Más allá del mapa", "part6":"Apéndices", "feedback":"¿Alguna objeción o propuesta?", "feedback_text":"El contenido es revisable. Contrasta las ideas, señala problemas o plantea una mejora en GitHub Discussions.", "original":"Leer el original en español", "license":"Textos bajo licencia", "edit":"En revisión", "home_title":"Explorar el Dharma sin confundir el mapa con el territorio", "home_description":"Un modelo abierto para observar la experiencia, examinar el sufrimiento y debatir caminos de transformación.", "language":"Idioma", "progress":"Actualmente disponible", "discuss_chapter":"Comentar este capítulo", "discuss_hint":"Debate público en GitHub Discussions. Se necesita una cuenta de GitHub para participar."},
@@ -241,6 +269,11 @@ def shell(lang: str, all_docs: dict, current: int | None, title: str, body: str,
     download_nav = sidebar_downloads(lang, prefix)
     download_header = header_downloads(lang, prefix)
     home = f"{prefix}{lang}/"
+    # On chapters, the top-bar call-to-action must open that chapter's exact thread.
+    # Only the homepage uses the general Discussions index.
+    topic = discussion_url(lang, current) if current is not None else None
+    community_url = topic or f"{REPO_URL}/discussions"
+    community_label = t["discuss_chapter"] if topic else t["change"]
     return f'''<!doctype html>
 <html lang="{lang}">
 <head>
@@ -253,7 +286,7 @@ def shell(lang: str, all_docs: dict, current: int | None, title: str, body: str,
 <a class="skip" href="#main">Skip to content</a>
 <header class="topbar"><div class="topbar-inner">
 <a class="brand" href="{e(home)}"><span class="brand-mark" aria-hidden="true">◌</span><span><strong>¿Nirvana?</strong><small>¡Aguántame el cubata!</small></span></a>
-<div class="topbar-actions">{download_header}<span class="version">{e(VERSION)}</span><a class="community-link" href="{e(REPO_URL)}/discussions" target="_blank" rel="noopener noreferrer">{e(t['change'])} ↗</a></div>
+<div class="topbar-actions">{download_header}<span class="version">{e(VERSION)}</span><a class="community-link" href="{e(community_url)}" target="_blank" rel="noopener noreferrer">{e(community_label)} ↗</a></div>
 </div></header>
 <div class="layout"><aside class="sidebar"><div class="languages" aria-label="{e(t['language'])}">{langs}</div>{download_nav}{nav_html}</aside>
 <div class="main-column"><main id="main">{body}</main><footer class="footer"><span>{e(t['unfinished'])}</span><span>{e(t['license'])} <a href="{e(LICENSE_URL)}" target="_blank" rel="noopener noreferrer">{e(CONFIG['license'])}</a></span></footer></div></div>
@@ -321,12 +354,13 @@ def chapter_page(lang: str, number: int, all_docs: dict) -> str:
     source_path = doc['path'].relative_to(ROOT).as_posix()
     ref = VERSION if re.match(r'^v\d',VERSION) else 'main'
     source_url = f'{REPO_URL}/blob/{quote(ref)}/{quote(source_path, safe="/")}'
-    feedback_url = target_discussion or f"{REPO_URL}/discussions"
-    feedback_label = t["discuss_chapter"] if target_discussion else t["change"]
+    feedback_link = (
+        f'<a href="{e(target_discussion)}" target="_blank" rel="noopener noreferrer">'
+        f'{e(t["discuss_chapter"])} ↗</a>' if target_discussion else ''
+    )
     body_html += (f'<div class="feedback-panel"><div class="feedback-icon">↗</div><div>'
                   f'<h2>{e(t["feedback"])}</h2><p>{e(t["feedback_text"])}</p>'
-                  f'<div class="feedback-links"><a href="{e(feedback_url)}" target="_blank" '
-                  f'rel="noopener noreferrer">{e(feedback_label)} ↗</a>'
+                  f'<div class="feedback-links">{feedback_link}'
                   f'<a href="{e(source_url)}" target="_blank" rel="noopener noreferrer">'
                   f'{e(t["source"])} ↗</a></div></div></div>')
     body_html += '<div class="chapter-pager">'
@@ -347,6 +381,7 @@ def write_page(file: Path, content: str) -> None:
 
 def build() -> None:
     all_docs = collect()
+    verify_discussions(all_docs)
     if OUT.exists():
         shutil.rmtree(OUT)
     OUT.mkdir(parents=True, exist_ok=True)
