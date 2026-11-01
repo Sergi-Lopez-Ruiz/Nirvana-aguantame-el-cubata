@@ -1,4 +1,4 @@
-# Primer Apendice - Cuando la mente deja de buscar
+# Primer Apéndice - Cuando la mente deja de buscar
 
 *Sobre la sed, la ecuanimidad y la posibilidad de aprender a no sufrir de más*
 

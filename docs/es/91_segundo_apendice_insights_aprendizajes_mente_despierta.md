@@ -1,4 +1,4 @@
-# Segundo Apendice - Insights: los aprendizajes de una mente que despierta
+# Segundo Apéndice - Insights: los aprendizajes de una mente que despierta
 
 *Notas para «¿Nirvana? ¡Aguántame el cubata!» — 31 de octubre de 2026*
 
