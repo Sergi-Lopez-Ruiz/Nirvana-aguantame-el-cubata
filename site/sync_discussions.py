@@ -12,6 +12,7 @@ import json
 import os
 import re
 import sys
+import time
 from pathlib import Path
 from urllib.error import HTTPError, URLError
 from urllib.request import Request, urlopen
@@ -21,6 +22,42 @@ from build import CONFIG, ROOT, collect, route
 CATEGORY_NAME = os.getenv("DISCUSSIONS_CATEGORY", "Capítulos").strip()
 GITHUB_GRAPHQL_URL = os.getenv("GITHUB_GRAPHQL_URL", "https://api.github.com/graphql")
 MARKER = re.compile(r"<!--\s*nirvana-chapter:([a-z]{2}/(?:0|\d{2}))\s*-->")
+
+# GitHub may refuse rapid successive discussion creations (anti-spam / secondary limit).
+# Only creation calls are delayed; existing discussions are always reused immediately.
+CREATE_DELAY_SECONDS = max(0.0, float(os.getenv("DISCUSSIONS_CREATE_DELAY_SECONDS", "12")))
+RETRY_BASE_SECONDS = max(1.0, float(os.getenv("DISCUSSIONS_RETRY_BASE_SECONDS", "30")))
+MAX_RETRIES = max(1, int(os.getenv("DISCUSSIONS_MAX_RETRIES", "6")))
+
+
+def create_with_retry(variables: dict, token: str) -> dict:
+    """Retry only temporary throttling errors, not validation/authentication failures."""
+    for attempt in range(MAX_RETRIES):
+        try:
+            return graphql(CREATE, variables, token)
+        except RuntimeError as exc:
+            description = str(exc).lower()
+            throttled = any(phrase in description for phrase in (
+                "was submitted too quickly", "secondary rate limit",
+                "rate limit", "abuse detection", "http 429",
+            ))
+            if not throttled:
+                raise
+            if attempt + 1 >= MAX_RETRIES:
+                raise RuntimeError(
+                    f"GitHub still blocks discussion creation after {MAX_RETRIES} attempts. "
+                    "Already created discussions remain saved on GitHub. "
+                    "Rerun the workflow later; existing discussions will be reused. "
+                    f"Last error: {exc}"
+                ) from exc
+            wait = min(240.0, RETRY_BASE_SECONDS * (2 ** attempt))
+            print(
+                f"GitHub temporarily throttled createDiscussion; "
+                f"waiting {wait:g}s before retry {attempt+2}/{MAX_RETRIES}...",
+                file=sys.stderr, flush=True,
+            )
+            time.sleep(wait)
+    raise AssertionError("unreachable")
 
 
 def graphql(query: str, variables: dict, token: str) -> dict:
@@ -127,7 +164,10 @@ def sync() -> None:
                     "El texto puede cambiar entre versiones; este hilo conserva el debate.\n\n"
                     f"<!-- nirvana-chapter:{key} -->"
                 )
-                created_discussion = graphql(CREATE, {"input": {
+                if created:
+                    print(f"Pacing GitHub Discussions: waiting {CREATE_DELAY_SECONDS:g}s...", flush=True)
+                    time.sleep(CREATE_DELAY_SECONDS)
+                created_discussion = create_with_retry({"input": {
                     "repositoryId": repo_id, "categoryId": category_id,
                     "title": discussion_title, "body": body,
                 }}, token)["createDiscussion"]["discussion"]

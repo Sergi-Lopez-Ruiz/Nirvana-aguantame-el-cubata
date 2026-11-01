@@ -137,7 +137,8 @@ def collect() -> dict[str,dict[int,dict]]:
             for p in sorted(path.glob("*.md")):
                 match = re.match(r"^(\d{2})[-_]", p.name)
                 if not match:
-                    if p.name not in ("0-agradecimientos.md", "agradecimientos.md"):
+                    # Prefix 0 is for acknowledgements in every language.
+                    if not re.match(r"^0[-_].+\.md$", p.name) and p.name != "agradecimientos.md":
                         print(f"Skipping file without numerical prefix: {p}", file=sys.stderr)
                     continue
                 num = int(match.group(1))
@@ -151,12 +152,15 @@ def collect() -> dict[str,dict[int,dict]]:
                 pages[num] = {"number": num, "title": extract_title(source, p.stem), "source": source, "path": p}
         # Acknowledgements display as 0; prologue displays as 00.
         # Support the previous name during migration, but do not permit duplicates.
-        canonical = path / "0-agradecimientos.md"
+        # Recognise translated names, e.g. 0-acknowledgements.md and 0-danksagung.md.
         legacy = path / "agradecimientos.md"
-        if canonical.is_file() and legacy.is_file():
-            raise ValueError(f"Both {canonical} and {legacy} exist. Delete the old one.")
-        acknowledgements = canonical if canonical.is_file() else legacy
-        if acknowledgements.is_file():
+        candidates = sorted(path.glob("0-*.md"))
+        if legacy.is_file():
+            candidates.append(legacy)
+        if len(candidates) > 1:
+            raise ValueError(f"Multiple acknowledgements for {lang}: {', '.join(map(str, candidates))}. Remove duplicates.")
+        acknowledgements = candidates[0] if candidates else None
+        if acknowledgements is not None:
             source = acknowledgements.read_text(encoding="utf-8-sig")
             pages[-1] = {"number": -1, "title": extract_title(source, "Agradecimientos"),
                          "source": source, "path": acknowledgements}
@@ -211,7 +215,7 @@ def render_markdown(text: str, lang: str, doc_path: Path, all_docs: dict, prefix
                     target = (doc_path.parent / unquote(parts.path)).resolve()
                     if child.type == "link_open" and parts.path.lower().endswith(".md"):
                         num_match = re.match(r"^(\d{2})[-_]", target.name)
-                        number = (-1 if target.name in ("0-agradecimientos.md", "agradecimientos.md") else
+                        number = (-1 if re.match(r"^0[-_]", target.name) or target.name == "agradecimientos.md" else
                                   int(num_match.group(1)) if num_match else None)
                         if number is not None and target.is_relative_to(DOCS) and number in all_docs[lang]:
                             new_href = f"{prefix}{lang}/{route(number)}/"
