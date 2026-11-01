@@ -195,11 +195,26 @@ def sidebar_downloads(lang: str, prefix: str) -> str:
             f'<div class="sidebar-download-buttons">{"".join(links)}</div>{partial}</section>')
 
 
+def header_downloads(lang: str, prefix: str) -> str:
+    """Always-visible compact PDF/EPUB links in the top bar."""
+    edition = BOOKS.get("languages", {}).get(lang)
+    if not edition:
+        return ""
+    links = []
+    for fmt in ("pdf", "epub"):
+        filename = edition.get(fmt)
+        if filename:
+            href = f"{prefix}downloads/{quote(filename)}"
+            links.append(f'<a class="topbar-download" href="{e(href)}" download title="{fmt.upper()}">{fmt.upper()} ↓</a>')
+    return ''.join(links)
+
+
 def shell(lang: str, all_docs: dict, current: int | None, title: str, body: str, prefix: str, description: str) -> str:
     t = UI[lang]
     nav_html = nav(lang, all_docs, current, prefix)
     langs = language_options(lang, current, all_docs, prefix)
     download_nav = sidebar_downloads(lang, prefix)
+    download_header = header_downloads(lang, prefix)
     home = f"{prefix}{lang}/"
     return f'''<!doctype html>
 <html lang="{lang}">
@@ -213,7 +228,7 @@ def shell(lang: str, all_docs: dict, current: int | None, title: str, body: str,
 <a class="skip" href="#main">Skip to content</a>
 <header class="topbar"><div class="topbar-inner">
 <a class="brand" href="{e(home)}"><span class="brand-mark" aria-hidden="true">◌</span><span><strong>¿Nirvana?</strong><small>¡Aguántame el cubata!</small></span></a>
-<div class="topbar-actions"><span class="version">{e(VERSION)}</span><a class="community-link" href="{e(REPO_URL)}/discussions" target="_blank" rel="noopener noreferrer">{e(t['change'])} ↗</a></div>
+<div class="topbar-actions">{download_header}<span class="version">{e(VERSION)}</span><a class="community-link" href="{e(REPO_URL)}/discussions" target="_blank" rel="noopener noreferrer">{e(t['change'])} ↗</a></div>
 </div></header>
 <div class="layout"><aside class="sidebar"><div class="languages" aria-label="{e(t['language'])}">{langs}</div>{download_nav}{nav_html}</aside>
 <div class="main-column"><main id="main">{body}</main><footer class="footer"><span>{e(t['unfinished'])}</span><span>{e(t['license'])} <a href="{e(LICENSE_URL)}" target="_blank" rel="noopener noreferrer">{e(CONFIG['license'])}</a></span></footer></div></div>
