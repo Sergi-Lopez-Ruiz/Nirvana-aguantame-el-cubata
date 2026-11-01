@@ -29,6 +29,8 @@ LANGS = list(dict.fromkeys(CONFIG["languages"]))
 DEFAULT_LANG = CONFIG["default_language"]
 REPO_URL = CONFIG["repo_url"].rstrip("/")
 LICENSE_URL = CONFIG["license_url"]
+BOOKS_FILE = ROOT / "dist" / "manifest.json"
+BOOKS = json.loads(BOOKS_FILE.read_text(encoding="utf-8")) if BOOKS_FILE.is_file() else {"languages": {}}
 
 UI = {
  "es": {
@@ -180,7 +182,7 @@ def shell(lang: str, all_docs: dict, current: int | None, title: str, body: str,
 <body>
 <a class="skip" href="#main">Skip to content</a>
 <header class="topbar"><div class="topbar-inner">
-<a class="brand" href="{e(home)}"><span class="brand-mark" aria-hidden="true">◌</span><span><strong>Nirvana?</strong><small>¡Aguántame el cubata!</small></span></a>
+<a class="brand" href="{e(home)}"><span class="brand-mark" aria-hidden="true">◌</span><span><strong>¿Nirvana?</strong><small>¡Aguántame el cubata!</small></span></a>
 <div class="topbar-actions"><span class="version">{e(VERSION)}</span><a class="community-link" href="{e(REPO_URL)}/discussions" target="_blank" rel="noopener noreferrer">{e(t['change'])} ↗</a></div>
 </div></header>
 <div class="layout"><aside class="sidebar"><div class="languages" aria-label="{e(t['language'])}">{langs}</div>{nav_html}</aside>
@@ -197,6 +199,21 @@ def home_page(lang: str, all_docs: dict) -> str:
 <h1 class="hero-title">{e(t['home_title'])}</h1>
 <p class="hero-description">{e(t['home_description'])}</p>
 <div class="hero-actions"><a class="primary-link" href="{e(first_url)}">{e(t['read'] if has_chapters else t['original'])} <span>→</span></a><a class="secondary-link" href="{e(REPO_URL)}/discussions" target="_blank" rel="noopener noreferrer">{e(t['change'])} ↗</a></div>'''
+    edition = BOOKS.get("languages", {}).get(lang)
+    if edition:
+        titles = {"es": ("Descargar esta edición", "Edición parcial: traducción pendiente"),
+                  "en": ("Download this edition", "Partial edition: translation in progress"),
+                  "de": ("Diese Ausgabe herunterladen", "Teilausgabe: Übersetzung in Arbeit")}
+        section_title, warning = titles.get(lang, titles["en"])
+        intro += f'<section class="book-downloads"><h2>{e(section_title)}</h2><div class="download-links">'
+        for fmt in ("pdf", "epub"):
+            file_name = edition.get(fmt)
+            if file_name:
+                intro += f'<a class="download-link" href="../downloads/{quote(file_name)}" download>{fmt.upper()} ↓</a>'
+        intro += '</div>'
+        if edition.get("partial"):
+            intro += f'<p class="download-warning">{e(warning)}</p>'
+        intro += '</section>'
     if not pages:
         intro += f'<div class="notice"><strong>{e(t["in_progress"])}</strong><p>{e(t["in_progress_text"])}</p></div>'
     else:
@@ -250,6 +267,17 @@ def build() -> None:
     if (DOCS / 'assets').is_dir():
         shutil.copytree(DOCS / 'assets', OUT / 'assets' / 'content', dirs_exist_ok=True)
     (OUT / '.nojekyll').write_text('',encoding='utf-8')
+    # Expose generated book downloads in the static site.
+    for edition in BOOKS.get('languages', {}).values():
+        for fmt in ('pdf','epub'):
+            name = edition.get(fmt)
+            if name:
+                src = ROOT / 'dist' / name
+                if not src.is_file():
+                    raise FileNotFoundError(f'Missing generated book: {src}')
+                target = OUT / 'downloads' / name
+                target.parent.mkdir(parents=True, exist_ok=True)
+                shutil.copy2(src, target)
     root_html = f'''<!doctype html><html lang="es"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1"><meta http-equiv="refresh" content="0; url={DEFAULT_LANG}/"><title>{e(CONFIG['title'])}</title><link rel="canonical" href="{DEFAULT_LANG}/"></head><body><p><a href="{DEFAULT_LANG}/">Leer en español / Read in Spanish</a></p></body></html>'''
     write_page(OUT / 'index.html', root_html)
     for lang in LANGS:
