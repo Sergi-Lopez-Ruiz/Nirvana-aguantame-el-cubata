@@ -16,6 +16,9 @@ jobs:
   build:
     name: Build website, PDFs and EPUBs
     runs-on: ubuntu-24.04
+    permissions:
+      contents: read
+      discussions: write
     steps:
       - name: Check out the publication version
         uses: actions/checkout@v5
@@ -36,6 +39,11 @@ jobs:
         env:
           BOOK_VERSION: ${{ github.event.release.tag_name || 'Borrador' }}
         run: python book/build.py
+      - name: Find or create one GitHub Discussion per chapter
+        env:
+          GITHUB_TOKEN: ${{ github.token }}
+          DISCUSSIONS_CATEGORY: Capítulos
+        run: python site/sync_discussions.py
       - name: Generate multilingual website with book downloads
         env:
           SITE_VERSION: ${{ github.event.release.tag_name || 'Borrador' }}

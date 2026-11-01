@@ -50,3 +50,10 @@ a{color:inherit}a:hover{color:var(--accent)}.skip{position:absolute;left:-9999px
 .topbar-download { display:inline-block; white-space:nowrap; border:1px solid var(--border); background:var(--panel); color:var(--accent); border-radius:7px; padding:5px 9px; text-decoration:none; font-size:12px; font-weight:700; }
 .topbar-download:hover, .topbar-download:focus-visible { border-color:var(--accent); }
 @media(max-width:720px) { .topbar-actions { gap:6px; flex-wrap:wrap; justify-content:flex-end; } .topbar-download { font-size:10px; padding:3px 6px; } .community-link { display:none; } }
+
+/* Dedicated discussion for each chapter */
+.chapter-discussion { display:flex; align-items:center; gap:13px; flex-wrap:wrap; margin:-15px 0 28px; }
+.chapter-discuss-link { display:inline-flex; align-items:center; gap:5px; border:1px solid var(--border); border-radius:8px; padding:8px 13px; text-decoration:none; font-size:12px; font-weight:700; color:var(--accent); background:var(--panel); }
+.chapter-discuss-link:hover { border-color:var(--accent); }
+.chapter-discussion small { font-size:11px; max-width:330px; color:var(--muted); line-height:1.45; }
+@media(max-width:720px){.chapter-discussion{margin:-12px 0 26px}}
