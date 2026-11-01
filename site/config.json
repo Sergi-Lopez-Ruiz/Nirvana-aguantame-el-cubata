@@ -1,0 +1,9 @@
+{
+  "title": "Nirvana? ¡Aguántame el cubata!",
+  "subtitle": "Una exploración abierta y revisable del Dharma",
+  "repo_url": "https://github.com/Sergi-Lopez-Ruiz/Nirvana-aguantame-el-cubata",
+  "default_language": "es",
+  "languages": ["es", "en", "de"],
+  "license": "CC BY-NC-SA 4.0",
+  "license_url": "https://creativecommons.org/licenses/by-nc-sa/4.0/deed.es"
+}
