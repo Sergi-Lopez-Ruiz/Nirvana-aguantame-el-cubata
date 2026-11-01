@@ -64,7 +64,7 @@ LABELS = {
     },
     "de": {
         "prologue": "Prolog", "parts": ["Wahrnehmen lernen", "Eine Karte des Dharma", "Den Weg gehen lernen", "Erfahrung erkunden", "Jenseits der Karte"],
-        "appendices": "Anhänge", "bibliography": "Literaturverzeichnis", "draft": "Ausgabe in Bearbeitung", "partial": "Teilausgabe: Übersetzung in Arbeit",
+        "appendices": "Anhänge", "bibliography": "Bibliographie", "draft": "Ausgabe in Bearbeitung", "partial": "Teilausgabe: Übersetzung in Arbeit",
         "online": "Dieses Kapitel diskutieren", "contents": "Inhalt",
     },
 }
@@ -84,11 +84,17 @@ def group(num: int) -> int:
 
 
 def discover(lang: str) -> dict[int, Path]:
-    result = {}
+    """Recognise chapters by their numeric prefix, including localized 0-acknowledgements."""
+    result: dict[int, Path] = {}
     for path in sorted((DOCS / lang).glob("*.md")):
+        if re.match(r"^0[-_].+\.md$", path.name):
+            if -1 in result:
+                raise ValueError(f"Multiple acknowledgement files for {lang}: {result[-1]} and {path}")
+            result[-1] = path
+            continue
         match = re.match(r"^(\d{2})[-_]", path.name)
         if not match:
-            if path.name not in ("0-agradecimientos.md", "agradecimientos.md"):
+            if path.name != "agradecimientos.md":
                 print(f"Note: ignoring unnumbered Markdown: {path.relative_to(ROOT)}", file=sys.stderr)
             continue
         number = int(match.group(1))
@@ -96,13 +102,11 @@ def discover(lang: str) -> dict[int, Path]:
         if number in result:
             raise ValueError(f"Duplicate chapter number {number:02d} for {lang}")
         result[number] = path
-    canonical = DOCS / lang / "0-agradecimientos.md"
     legacy = DOCS / lang / "agradecimientos.md"
-    if canonical.is_file() and legacy.is_file():
-        raise ValueError(f"Both {canonical} and {legacy} exist. Delete the old one.")
-    acknowledgements = canonical if canonical.is_file() else legacy
-    if acknowledgements.is_file():
-        result[-1] = acknowledgements
+    if legacy.is_file():
+        if -1 in result:
+            raise ValueError(f"Both localized acknowledgements and legacy {legacy} exist. Delete the old one.")
+        result[-1] = legacy
     return dict(sorted(result.items()))
 
 
@@ -169,6 +173,9 @@ def assemble(lang: str, docs: dict[int, Path], version: str, reference: set[int]
             title = re.sub(r"\s+#+\s*$", "", re.sub(r"^#\s+", "", lines[title_ix])).strip()
             del lines[title_ix]
         if num == 99:
+            # Ensure the German print/EPUB heading agrees with the website and bibliography text.
+            if lang == "de":
+                title = lbl["bibliography"]
             # The original Markdown can say "99. Bibliografía", but 99 is only a stable
             # filename/URL identifier. It must not be printed in PDF or EPUB.
             title = re.sub(r"^99\s*[.．:–-]\s*", "", title).strip() or lbl["bibliography"]
@@ -208,12 +215,33 @@ def assemble(lang: str, docs: dict[int, Path], version: str, reference: set[int]
     return "\n".join(text) + "\n"
 
 
+TRANSLATED_BOOK_TITLES = {
+    "en": "Nirvana? Hold My Beer!",
+    "de": "Nirvana? Halt mal mein Bier!",
+}
+
+
+def subtitle_metadata(lang: str, partial: bool, directory: Path) -> Path:
+    """Use Markdown line breaks in YAML metadata for both PDF and EPUB title pages."""
+    if lang in TRANSLATED_BOOK_TITLES:
+        lines = [TRANSLATED_BOOK_TITLES[lang]]
+        if partial:
+            lines.append(LABELS[lang]["partial"])
+    else:
+        lines = [CONFIG.get("subtitle", "")]
+    # Two spaces before newline: Markdown hard line break. Pandoc turns it into
+    # \ in LaTeX and <br> in HTML/EPUB instead of collapsing the lines.
+    formatted = ["  " + value + ("  " if index < len(lines)-1 else "")
+                 for index, value in enumerate(lines)]
+    target = directory / f"{lang}-subtitle.yaml"
+    target.write_text("subtitle: |-\n" + "\n".join(formatted) + "\n", encoding="utf-8")
+    return target
+
+
 def metadata_args(lang: str, version: str, partial: bool) -> list[str]:
-    lbl = LABELS.get(lang, LABELS["en"])
-    subtitle = lbl["partial"] if partial else CONFIG.get("subtitle", "")
     author = CONFIG.get("author", "Sergio López Ruiz")
     entries = {
-        "title": CONFIG["title"], "subtitle": subtitle,
+        "title": CONFIG["title"],
         "author": author, "lang": lang, "date": version_caption(lang, version),
         "rights": CONFIG.get("license", "CC BY-NC-SA 4.0"),
         "description": version_caption(lang, version),
@@ -267,6 +295,7 @@ def main() -> None:
             md.write_text(assemble(lang, docs, version, reference), encoding="utf-8")
             md_pdf.write_text(assemble(lang, docs, version, reference, for_pdf=True), encoding="utf-8")
             meta = metadata_args(lang, version, partial)
+            meta += ["--metadata-file", str(subtitle_metadata(lang, partial, temp))]
             # Add the original logo to the existing LaTeX title page, not an extra page.
             # Pandoc's default book-class title page does not support `titlegraphic`.
             logo_tex = "\\detokenize{" + logo.as_posix() + "}"
