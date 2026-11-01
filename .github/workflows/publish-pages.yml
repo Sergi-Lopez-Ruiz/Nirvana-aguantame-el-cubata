@@ -37,7 +37,7 @@ jobs:
           python -m pip install -r site/requirements.txt
       - name: Generate PDFs and EPUBs for available languages
         env:
-          BOOK_VERSION: ${{ github.event.release.tag_name || 'Borrador' }}
+          BOOK_VERSION: ${{ github.event.release.tag_name || 'V0.1.0' }}
         run: python book/build.py
       - name: Find or create one GitHub Discussion per chapter
         env:
@@ -46,8 +46,9 @@ jobs:
         run: python site/sync_discussions.py
       - name: Generate multilingual website with book downloads
         env:
-          SITE_VERSION: ${{ github.event.release.tag_name || 'Borrador' }}
+          SITE_VERSION: ${{ github.event.release.tag_name || 'V0.1.0' }}
           REQUIRE_DISCUSSIONS: '1'
+          SOURCE_REF: ${{ github.event.release.tag_name || 'main' }}
         run: python site/build.py
       - name: Verify all web download links and files
         run: |

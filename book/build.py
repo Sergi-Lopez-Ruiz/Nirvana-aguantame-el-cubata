@@ -90,13 +90,39 @@ def discover(lang: str) -> dict[int, Path]:
     return dict(sorted(result.items()))
 
 
+def canonical_version(raw: str) -> str:
+    """Use V0.1.0 on the book even when GitHub tags are lowercase v0.1.0."""
+    value = (raw or "").strip() or "V0.1.0"
+    matched = re.fullmatch(r"[vV](\d+)\.(\d+)\.(\d+)", value)
+    if matched:
+        return "V" + ".".join(matched.groups())
+    return value
+
+
+def edition_stem(version: str, lang: str) -> str:
+    """Stable readable filenames; distinguish translated editions to avoid collisions."""
+    matched = re.fullmatch(r"V(\d+)\.(\d+)\.(\d+)", version)
+    if matched:
+        compact = "V" + "".join(matched.groups())
+    else:
+        compact = re.sub(r"[^A-Za-z0-9_-]+", "_", version).strip("_") or "V010"
+    name = f"Nirvana_AEC_{compact}"
+    if lang != CONFIG["default_language"]:
+        name += f"_{lang.upper()}"
+    return name
+
+
+def version_caption(lang: str, version: str) -> str:
+    return f"{'Versión' if lang == 'es' else 'Version'} {version}"
+
+
 def assemble(lang: str, docs: dict[int, Path], version: str, reference: set[int], *, for_pdf: bool = False) -> str:
     """Generate the book; PDF uses real LaTeX chapters, EPUB retains the nested navigation."""
     lbl = LABELS.get(lang, LABELS["en"])
     complete = set(docs) == reference
     # In a PDF, content before the first chapter would create a nearly empty page.
     # Place edition metadata under the first chapter title instead.
-    text = [] if for_pdf else [f"*{lbl['draft']} · {version}*\n",
+    text = [] if for_pdf else [f"*{version_caption(lang, version)}*\n",
                                f"*{CONFIG.get('license', 'CC BY-NC-SA 4.0')}*\n"]
     partial_note = ""
     if not complete:
@@ -146,7 +172,7 @@ def assemble(lang: str, docs: dict[int, Path], version: str, reference: set[int]
                        f"{'0' if num == -1 else f'{num:02d}'}/")
         if for_pdf:
             if num == min(docs):
-                text.append(f"*{lbl['draft']} · {version} · {CONFIG.get('license', 'CC BY-NC-SA 4.0')}*\n")
+                text.append(f"*{version_caption(lang, version)} · {CONFIG.get('license', 'CC BY-NC-SA 4.0')}*\n")
                 if partial_note:
                     text.append(partial_note)
             # Put the web discussion link near the title, not on a nearly empty final page.
@@ -172,9 +198,9 @@ def metadata_args(lang: str, version: str, partial: bool) -> list[str]:
     author = CONFIG.get("author", "Sergio López Ruiz")
     entries = {
         "title": CONFIG["title"], "subtitle": subtitle,
-        "author": author, "lang": lang, "date": version,
+        "author": author, "lang": lang, "date": version_caption(lang, version),
         "rights": CONFIG.get("license", "CC BY-NC-SA 4.0"),
-        "description": f"{lbl['draft']} · {version}",
+        "description": version_caption(lang, version),
     }
     args = []
     for k, v in entries.items():
@@ -192,7 +218,7 @@ def run(args: list[str]) -> None:
 
 def main() -> None:
     parser = argparse.ArgumentParser(description=__doc__)
-    parser.add_argument("--version", default=os.environ.get("BOOK_VERSION", "Borrador"))
+    parser.add_argument("--version", default=os.environ.get("BOOK_VERSION", "V0.1.0"))
     parser.add_argument("--only", nargs="*", help="Restrict generation to one or more configured languages")
     options = parser.parse_args()
     if not shutil.which("pandoc"):
@@ -207,8 +233,7 @@ def main() -> None:
     logo = find_logo()
     out = ROOT / "dist"
     out.mkdir(exist_ok=True)
-    version = options.version.strip() or "Borrador"
-    safe_version = re.sub(r"[^a-z0-9.-]+", "-", version.casefold()).strip("-.") or "borrador"
+    version = canonical_version(options.version)
     manifest = {"version": version, "languages": {}}
     with tempfile.TemporaryDirectory(prefix="nirvana-book-") as tempdir:
         temp = Path(tempdir)
@@ -218,8 +243,7 @@ def main() -> None:
                 print(f"{lang}: skipped (no translations)")
                 continue
             partial = set(docs) != reference
-            suffix = "-parcial" if partial else ""
-            stem = f"nirvana-{lang}-{safe_version}{suffix}"
+            stem = edition_stem(version, lang)
             md = temp / f"{lang}.md"
             md_pdf = temp / f"{lang}-pdf.md"
             pdf = out / f"{stem}.pdf"
