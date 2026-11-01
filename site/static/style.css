@@ -50,3 +50,9 @@ a{color:inherit}a:hover{color:var(--accent)}.skip{position:absolute;left:-9999px
 /* Original logo alongside the project name in the fixed header. */
 .brand-logo { display:block; width:42px; height:42px; object-fit:contain; flex:0 0 auto; }
 @media(max-width:720px) { .brand-logo { width:34px; height:34px; } }
+
+/* A dedicated, unnumbered bibliography section in the table of contents. */
+.chapter-nav a.bibliography-link{display:block;margin:0 0 0 2px;padding:10px 8px;font-size:10px;line-height:1.4;font-weight:750;letter-spacing:.065em;text-transform:uppercase;color:#7a847a}
+.chapter-nav a.bibliography-link.active{color:#285d46}
+.chapter-card.bibliography-card{grid-template-columns:1fr 22px}
+@media(prefers-color-scheme:dark){.chapter-nav a.bibliography-link{color:#839786}.chapter-nav a.bibliography-link.active{color:#b7e1c8}}

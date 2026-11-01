@@ -38,17 +38,17 @@ def find_logo() -> Path:
 LABELS = {
     "es": {
         "prologue": "Prólogo", "parts": ["Aprender a mirar", "Un mapa del Dharma", "Aprender a caminar", "Explorar la experiencia", "Más allá del mapa"],
-        "appendices": "Apéndices", "draft": "Edición en desarrollo", "partial": "Edición parcial: traducción en curso",
+        "appendices": "Apéndices", "bibliography": "Bibliografía", "draft": "Edición en desarrollo", "partial": "Edición parcial: traducción en curso",
         "online": "Debatir este capítulo", "contents": "Índice",
     },
     "en": {
         "prologue": "Prologue", "parts": ["Learning to observe", "A map of the Dharma", "Learning the path", "Exploring experience", "Beyond the map"],
-        "appendices": "Appendices", "draft": "Work in progress", "partial": "Partial edition: translation in progress",
+        "appendices": "Appendices", "bibliography": "Bibliography", "draft": "Work in progress", "partial": "Partial edition: translation in progress",
         "online": "Discuss this chapter", "contents": "Contents",
     },
     "de": {
         "prologue": "Prolog", "parts": ["Wahrnehmen lernen", "Eine Karte des Dharma", "Den Weg gehen lernen", "Erfahrung erkunden", "Jenseits der Karte"],
-        "appendices": "Anhänge", "draft": "Ausgabe in Bearbeitung", "partial": "Teilausgabe: Übersetzung in Arbeit",
+        "appendices": "Anhänge", "bibliography": "Literaturverzeichnis", "draft": "Ausgabe in Bearbeitung", "partial": "Teilausgabe: Übersetzung in Arbeit",
         "online": "Dieses Kapitel diskutieren", "contents": "Inhalt",
     },
 }
@@ -62,7 +62,8 @@ def group(num: int) -> int:
     if 14 <= num <= 18: return 3
     if 19 <= num <= 25: return 4
     if 26 <= num <= 29: return 5
-    if 90 <= num <= 99: return 6
+    if 90 <= num <= 98: return 6
+    if num == 99: return 7
     raise ValueError(f"Chapter number {num:02d} is outside the established structure")
 
 
@@ -106,7 +107,7 @@ def assemble(lang: str, docs: dict[int, Path], version: str, reference: set[int]
     group_seen = set()
     for num, path in docs.items():
         section = group(num)
-        if section not in group_seen and section > 0:
+        if section not in group_seen and section > 0 and section != 7:
             if section <= 5:
                 label = f"{['I','II','III','IV','V'][section-1]} · {lbl['parts'][section-1]}"
             else:
@@ -125,8 +126,21 @@ def assemble(lang: str, docs: dict[int, Path], version: str, reference: set[int]
         if title_ix is not None:
             title = re.sub(r"\s+#+\s*$", "", re.sub(r"^#\s+", "", lines[title_ix])).strip()
             del lines[title_ix]
-        depth = 1 if for_pdf or num in (-1, 0) else 2
-        text.append(f"\n{'#'*depth} {title} {{#chapter-{'0' if num == -1 else f'{num:02d}'}}}\n")
+        if num == 99:
+            # The original Markdown can say "99. Bibliografía", but 99 is only a stable
+            # filename/URL identifier. It must not be printed in PDF or EPUB.
+            title = re.sub(r"^99\s*[.．:–-]\s*", "", title).strip() or lbl["bibliography"]
+            if for_pdf:
+                # One visible heading, no duplicate "part" title. Display the TOC entry
+                # at the same top level as "Apéndices", not indented underneath it.
+                text.append(f"\n\\chapter*{{{title}}}\n"
+                            "\\phantomsection\n"
+                            f"\\addcontentsline{{toc}}{{part}}{{{title}}}\n")
+            else:
+                text.append(f"\n# {title} {{#chapter-99}}\n")
+        else:
+            depth = 1 if for_pdf or num in (-1, 0) else 2
+            text.append(f"\n{'#'*depth} {title} {{#chapter-{'0' if num == -1 else f'{num:02d}'}}}\n")
         chapter_url = (f"https://sergi-lopez-ruiz.github.io/"
                        f"Nirvana-aguantame-el-cubata/{lang}/"
                        f"{'0' if num == -1 else f'{num:02d}'}/")
