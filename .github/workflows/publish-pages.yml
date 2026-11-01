@@ -14,7 +14,7 @@ concurrency:
 
 jobs:
   build:
-    name: Build static pages
+    name: Build website, PDFs and EPUBs
     runs-on: ubuntu-24.04
     steps:
       - name: Check out the publication version
@@ -27,12 +27,32 @@ jobs:
           python-version: '3.12'
           cache: pip
           cache-dependency-path: site/requirements.txt
-      - name: Install generator
-        run: python -m pip install -r site/requirements.txt
-      - name: Generate the multilingual website
+      - name: Install website and book build tools
+        run: |
+          sudo apt-get update
+          sudo apt-get install -y pandoc texlive-xetex texlive-latex-extra texlive-fonts-recommended fonts-dejavu-core
+          python -m pip install -r site/requirements.txt
+      - name: Generate PDFs and EPUBs for available languages
+        env:
+          BOOK_VERSION: ${{ github.event.release.tag_name || 'Borrador' }}
+        run: python book/build.py
+      - name: Generate multilingual website with book downloads
         env:
           SITE_VERSION: ${{ github.event.release.tag_name || 'Borrador' }}
         run: python site/build.py
+      - name: Verify all web download links and files
+        run: |
+          python site/verify_downloads.py
+          echo "Built commit: $GITHUB_SHA"
+          find _site/downloads -maxdepth 1 -type f -printf '%f (%s bytes)\n' | sort
+      - name: Save PDF and EPUB files as workflow artifacts
+        uses: actions/upload-artifact@v7
+        with:
+          name: nirvana-books
+          path: |
+            dist/*.pdf
+            dist/*.epub
+          if-no-files-found: error
       - name: Configure Pages
         uses: actions/configure-pages@v6
       - name: Upload website artifact
@@ -55,3 +75,22 @@ jobs:
       - name: Deploy
         id: deployment
         uses: actions/deploy-pages@v5
+
+  release_assets:
+    name: Attach PDFs and EPUBs to release
+    runs-on: ubuntu-24.04
+    needs: build
+    if: github.event_name == 'release'
+    permissions:
+      contents: write
+    steps:
+      - name: Download PDF and EPUB artifacts
+        uses: actions/download-artifact@v8
+        with:
+          name: nirvana-books
+          path: dist
+      - name: Add editions to GitHub Release
+        env:
+          GH_TOKEN: ${{ github.token }}
+          TAG: ${{ github.event.release.tag_name }}
+        run: gh release upload "$TAG" dist/*.pdf dist/*.epub --repo "$GITHUB_REPOSITORY" --clobber
