@@ -46,14 +46,7 @@ a{color:inherit}a:hover{color:var(--accent)}.skip{position:absolute;left:-9999px
 .sidebar-download-note { color:var(--muted); display:block; margin-top:7px; font-size:11px; }
 @media(max-width:720px) { .sidebar-downloads { display:flex; align-items:center; gap:10px; padding:10px 0 0; border-bottom:0; flex-wrap:wrap; } .sidebar-download-heading { margin-bottom:0; } .sidebar-download-link { padding:4px 10px; } .sidebar-download-note { margin-top:0; } }
 
-/* Also expose PDF and EPUB at the top right on every page. */
-.topbar-download { display:inline-block; white-space:nowrap; border:1px solid var(--border); background:var(--panel); color:var(--accent); border-radius:7px; padding:5px 9px; text-decoration:none; font-size:12px; font-weight:700; }
-.topbar-download:hover, .topbar-download:focus-visible { border-color:var(--accent); }
-@media(max-width:720px) { .topbar-actions { gap:6px; flex-wrap:wrap; justify-content:flex-end; } .topbar-download { font-size:10px; padding:3px 6px; } .community-link { display:none; } }
 
-/* Dedicated discussion for each chapter */
-.chapter-discussion { display:flex; align-items:center; gap:13px; flex-wrap:wrap; margin:-15px 0 28px; }
-.chapter-discuss-link { display:inline-flex; align-items:center; gap:5px; border:1px solid var(--border); border-radius:8px; padding:8px 13px; text-decoration:none; font-size:12px; font-weight:700; color:var(--accent); background:var(--panel); }
-.chapter-discuss-link:hover { border-color:var(--accent); }
-.chapter-discussion small { font-size:11px; max-width:330px; color:var(--muted); line-height:1.45; }
-@media(max-width:720px){.chapter-discussion{margin:-12px 0 26px}}
+/* Original logo alongside the project name in the fixed header. */
+.brand-logo { display:block; width:42px; height:42px; object-fit:contain; flex:0 0 auto; }
+@media(max-width:720px) { .brand-logo { width:34px; height:34px; } }

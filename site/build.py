@@ -35,6 +35,20 @@ DISCUSSIONS_FILE = ROOT / "dist" / "discussions.json"
 DISCUSSIONS = json.loads(DISCUSSIONS_FILE.read_text(encoding="utf-8")) if DISCUSSIONS_FILE.is_file() else {"pages": {}}
 
 
+def find_logo() -> Path:
+    """Use the user's actual logo.png (no generated or placeholder artwork)."""
+    candidates = (ROOT / "logo.png", SITE / "static" / "logo.png", DOCS / "assets" / "logo.png")
+    for candidate in candidates:
+        if candidate.is_file():
+            if candidate.read_bytes()[:8] != b"\x89PNG\r\n\x1a\n":
+                raise ValueError(f"Expected a PNG image: {candidate}")
+            return candidate
+    raise FileNotFoundError(
+        "logo.png not found. Add it at the repository root (next to site/, book/, docs/), "
+        "or at site/static/logo.png or docs/assets/logo.png."
+    )
+
+
 def discussion_url(lang: str, number: int) -> str | None:
     """Return the dedicated GitHub Discussion for this exact chapter and language."""
     return DISCUSSIONS.get("pages", {}).get(lang, {}).get(route(number))
@@ -285,7 +299,7 @@ def shell(lang: str, all_docs: dict, current: int | None, title: str, body: str,
 <body>
 <a class="skip" href="#main">Skip to content</a>
 <header class="topbar"><div class="topbar-inner">
-<a class="brand" href="{e(home)}"><span class="brand-mark" aria-hidden="true">◌</span><span><strong>¿Nirvana?</strong><small>¡Aguántame el cubata!</small></span></a>
+<a class="brand" href="{e(home)}"><img class="brand-logo" src="{e(prefix)}assets/logo.png" alt="" width="42" height="42"><span><strong>¿Nirvana?</strong><small>¡Aguántame el cubata!</small></span></a>
 <div class="topbar-actions">{download_header}<span class="version">{e(VERSION)}</span><a class="community-link" href="{e(community_url)}" target="_blank" rel="noopener noreferrer">{e(community_label)} ↗</a></div>
 </div></header>
 <div class="layout"><aside class="sidebar"><div class="languages" aria-label="{e(t['language'])}">{langs}</div>{download_nav}{nav_html}</aside>
@@ -386,6 +400,8 @@ def build() -> None:
         shutil.rmtree(OUT)
     OUT.mkdir(parents=True, exist_ok=True)
     shutil.copytree(SITE / 'static', OUT / 'assets', dirs_exist_ok=True)
+    # Copy the logo regardless of whether it lives at the repository root or in an assets folder.
+    shutil.copy2(find_logo(), OUT / 'assets' / 'logo.png')
     if (DOCS / 'assets').is_dir():
         shutil.copytree(DOCS / 'assets', OUT / 'assets' / 'content', dirs_exist_ok=True)
     (OUT / '.nojekyll').write_text('',encoding='utf-8')

@@ -4,3 +4,22 @@
   \let\cleardoublepage\clearpage%
   \setlength{\parskip}{5pt plus 1pt minus 1pt}%
 }
+
+
+% Original project logo placed on the existing PDF title page.
+% `book/build.py` replaces NIRVANA_LOGO_FILE with an absolute TeX-safe path.
+\usepackage{graphicx}
+\usepackage{etoolbox}
+\makeatletter
+\patchcmd{\maketitle}{\vskip 60\p@}{%
+  \vskip 8\p@
+  \begin{center}
+    \includegraphics[width=.30\textwidth,height=38mm,keepaspectratio]{NIRVANA_LOGO_FILE}%
+  \end{center}
+  \vskip 1.2em
+}{%
+  \typeout{NIRVANA-LOGO: successfully inserted logo on book title page}%
+}{%
+  \PackageError{nirvana-logo}{Cannot add logo to PDF title page}{Check the book documentclass and LaTeX version}%
+}
+\makeatother

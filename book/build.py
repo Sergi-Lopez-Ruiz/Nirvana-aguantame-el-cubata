@@ -21,6 +21,20 @@ ROOT = Path(__file__).resolve().parent.parent
 DOCS = ROOT / "docs"
 BOOK = ROOT / "book"
 CONFIG = json.loads((ROOT / "site/config.json").read_text(encoding="utf-8"))
+
+
+def find_logo() -> Path:
+    """Locate the same source image used by the web header."""
+    candidates = (ROOT / "logo.png", ROOT / "site" / "static" / "logo.png", DOCS / "assets" / "logo.png")
+    for candidate in candidates:
+        if candidate.is_file():
+            if candidate.read_bytes()[:8] != b"\x89PNG\r\n\x1a\n":
+                raise ValueError(f"Expected a PNG image: {candidate}")
+            return candidate.resolve()
+    raise FileNotFoundError(
+        "logo.png not found. Add it at the repository root (next to site/, book/, docs/), "
+        "or at site/static/logo.png or docs/assets/logo.png."
+    )
 LABELS = {
     "es": {
         "prologue": "Prólogo", "parts": ["Aprender a mirar", "Un mapa del Dharma", "Aprender a caminar", "Explorar la experiencia", "Más allá del mapa"],
@@ -176,6 +190,7 @@ def main() -> None:
     reference = set(discover(CONFIG["default_language"]))
     if not reference:
         raise SystemExit("The original language has no chapters")
+    logo = find_logo()
     out = ROOT / "dist"
     out.mkdir(exist_ok=True)
     version = options.version.strip() or "Borrador"
@@ -198,13 +213,21 @@ def main() -> None:
             md.write_text(assemble(lang, docs, version, reference), encoding="utf-8")
             md_pdf.write_text(assemble(lang, docs, version, reference, for_pdf=True), encoding="utf-8")
             meta = metadata_args(lang, version, partial)
+            # Add the original logo to the existing LaTeX title page, not an extra page.
+            # Pandoc's default book-class title page does not support `titlegraphic`.
+            logo_tex = "\\detokenize{" + logo.as_posix() + "}"
+            title_header = temp / "header-with-logo.tex"
+            title_header.write_text(
+                (BOOK / "header.tex").read_text(encoding="utf-8").replace("NIRVANA_LOGO_FILE", logo_tex),
+                encoding="utf-8",
+            )
             common = ["pandoc", str(md), "--from=markdown+raw_html", "--standalone", "--toc", "--toc-depth=2", "--resource-path", f"{DOCS / lang}:{DOCS / 'assets'}:{ROOT}"]
             run(["pandoc", str(md_pdf), "--from=markdown+raw_tex+raw_html", "--standalone", "--toc", "--toc-depth=1", "--resource-path", f"{DOCS / lang}:{DOCS / 'assets'}:{ROOT}"] + ["--to=pdf", "--pdf-engine=xelatex", "-V", "documentclass=book", "-V", "classoption=oneside,openany",
                 "-V", "papersize=a5", "-V", "mainfont=DejaVu Serif",
                 "-V", "sansfont=DejaVu Sans", "-V", "geometry:margin=17mm",
-                "-V", "fontsize=10pt", "--include-in-header", str(BOOK / "header.tex"),
+                "-V", "fontsize=10pt", "--include-in-header", str(title_header),
                 "--output", str(pdf)] + meta)
-            run(common + ["--to=epub3", "--split-level=2", "--css", str(BOOK / "epub.css"), "--output", str(epub)] + meta)
+            run(common + ["--to=epub3", "--split-level=2", "--epub-cover-image", str(logo), "--css", str(BOOK / "epub.css"), "--output", str(epub)] + meta)
             manifest["languages"][lang] = {
                 "pdf": pdf.name, "epub": epub.name, "chapters": len(docs),
                 "partial": partial, "missing": sorted(reference - set(docs)),
