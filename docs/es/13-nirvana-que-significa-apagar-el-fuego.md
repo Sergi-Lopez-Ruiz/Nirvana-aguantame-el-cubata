@@ -1,7 +1,5 @@
 # 13. Nirvana: ¿qué significa apagar el fuego?
 
-## ------------------
-
 Hemos llegado.
 
 Después de doce capítulos hablando de sufrimiento, ignorancia, condicionamiento, karma, vacuidad y un yo que parece tener cada vez menos claro quién es, finalmente vamos a hablar del nirvana.
