@@ -27,3 +27,21 @@ a{color:inherit}a:hover{color:var(--accent)}.skip{position:absolute;left:-9999px
 .chapter-pager{display:grid;grid-template-columns:1fr 1fr;gap:24px;margin-top:44px;border-top:1px solid var(--border);padding-top:22px}.pager-link{text-decoration:none;display:flex;flex-direction:column;gap:6px;font-family:var(--serif);font-size:14px;line-height:1.35}.pager-link small{font-family:var(--sans);font-size:11px;text-transform:uppercase;letter-spacing:.08em;font-weight:700;color:var(--accent)}.pager-link.right{text-align:right}.footer{border-top:1px solid var(--border);padding:20px 26px;display:flex;gap:14px;flex-wrap:wrap;justify-content:space-between;color:#899188;font-size:10px}.footer a{color:inherit;text-underline-offset:3px}
 @media(max-width:1000px){.layout{grid-template-columns:250px minmax(0,1fr)}.sidebar{padding-left:18px}main{padding:52px 38px}}@media(max-width:720px){.topbar-inner{padding:11px 16px}.brand-mark{width:32px;height:32px;font-size:26px}.brand strong{font-size:16px}.brand small{font-size:10px}.version{display:none}.community-link{font-size:11px}.layout{display:block}.sidebar{position:static;height:auto;overflow:visible;border-right:0;border-bottom:1px solid var(--border);padding:10px 16px 13px}.languages{padding-bottom:0;border-bottom:0}.chapter-nav{display:none}main{padding:33px 21px 45px}.hero{padding-top:18px}.hero-title{font-size:38px}.hero-description{font-size:20px}.chapter-card{font-size:16px}.prose{font-size:18px;line-height:1.73}.prose h1{font-size:36px}.prose h2{font-size:26px}.feedback-panel{padding:20px 18px}.chapter-pager{gap:12px}}
 @media(prefers-color-scheme:dark){:root{--ink:#e2e9e0;--muted:#a8b3a5;--accent:#8fc3a6;--border:#34443a;--warm:#19271f;--paper:#111b16;--panel:#1c2c21}.topbar{background:#17241c}.brand{color:#e2e9e0}.brand-mark{border-color:#355b48}.sidebar{background:#16231b}.chapter-nav a{color:#b9c6b8}.chapter-nav a:hover,.chapter-nav a.active,.lang-option.selected{background:#263b2d;color:#b7e1c8}.lang-option:hover{background:#223428}.nav-label,.part-title,.chapter-number{color:#839786}.hero-title,.prose h1,.about-panel h2{color:#e8ede4}.hero-description{color:#b5c7b8}.chapter-card:hover{background:#1b2c20}.notice,.about-panel,.feedback-panel,.prose blockquote,.prose code,.prose pre{background:#223127}.prose a,.secondary-link,.feedback-links a{color:#a1cfad}.primary-link{color:#102119;background:#a2ceb1}.primary-link:hover{background:#bde2c5;color:#102119}.feedback-panel h2{color:#e1e7df}.feedback-panel p{color:#b1bdb0}}
+
+/* Download cards for PDF and EPUB editions */
+.book-downloads { margin-top:36px; padding:22px 25px; background:var(--panel); border:1px solid var(--border); border-radius:12px; }
+.book-downloads h2 { margin:0 0 14px; font-family:var(--serif); font-size:23px; font-weight:500; }
+.download-links { display:flex; flex-wrap:wrap; gap:10px; }
+.download-link { display:inline-block; padding:9px 18px; font-size:13px; font-weight:700; text-decoration:none; border-radius:7px; border:1px solid var(--border); background:var(--paper); color:var(--accent); }
+.download-link:hover { border-color:var(--accent); }
+.download-warning { font-size:12px; color:var(--muted); margin:12px 0 0; }
+
+
+/* Persistent per-language book downloads: visible on the home page and chapters. */
+.sidebar-downloads { padding:15px 9px 14px; border-bottom:1px solid var(--border); }
+.sidebar-download-heading { font-size:11px; font-weight:700; color:var(--muted); margin-bottom:8px; letter-spacing:.02em; }
+.sidebar-download-buttons { display:flex; flex-wrap:wrap; gap:8px; }
+.sidebar-download-link { background:var(--paper); color:var(--accent); border:1px solid var(--border); border-radius:7px; text-decoration:none; font-size:12px; font-weight:700; padding:6px 12px; white-space:nowrap; }
+.sidebar-download-link:hover, .sidebar-download-link:focus-visible { border-color:var(--accent); background:var(--panel); }
+.sidebar-download-note { color:var(--muted); display:block; margin-top:7px; font-size:11px; }
+@media(max-width:720px) { .sidebar-downloads { display:flex; align-items:center; gap:10px; padding:10px 0 0; border-bottom:0; flex-wrap:wrap; } .sidebar-download-heading { margin-bottom:0; } .sidebar-download-link { padding:4px 10px; } .sidebar-download-note { margin-top:0; } }
