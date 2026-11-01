@@ -18,6 +18,7 @@ from pathlib import Path
 from urllib.parse import quote, unquote, urlsplit
 
 from markdown_it import MarkdownIt
+from seo import base_url, google_verification_meta, make_head, meta_description, write_seo_files
 
 ROOT = Path(__file__).resolve().parent.parent
 SITE = ROOT / "site"
@@ -301,6 +302,8 @@ def shell(lang: str, all_docs: dict, current: int | None, title: str, body: str,
     download_nav = sidebar_downloads(lang, prefix)
     download_header = header_downloads(lang, prefix)
     home = f"{prefix}{lang}/"
+    seo_head = make_head(lang=lang, current=current, title=title, description=description,
+                         all_docs=all_docs, langs=LANGS, route=route, repo_url=REPO_URL, license_url=LICENSE_URL)
     # On chapters, the top-bar call-to-action must open that chapter's exact thread.
     # Only the homepage uses the general Discussions index.
     topic = discussion_url(lang, current) if current is not None else None
@@ -310,8 +313,8 @@ def shell(lang: str, all_docs: dict, current: int | None, title: str, body: str,
 <html lang="{lang}">
 <head>
 <meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1">
-<meta name="color-scheme" content="light dark"><meta name="description" content="{e(description)}">
-<title>{e(title)} · {e(CONFIG['title'])}</title>
+<meta name="color-scheme" content="light dark">
+{seo_head}
 <link rel="stylesheet" href="{e(prefix)}assets/style.css">
 </head>
 <body>
@@ -363,7 +366,7 @@ def home_page(lang: str, all_docs: dict) -> str:
                       f'<a class="chapter-card bibliography-card" href="../{lang}/99/">'
                       f'<span>{e(pages[99]["title"])}</span><span class="card-arrow">↗</span></a></div>')
     intro += f'<section class="about-panel"><h2>{e(t["about"])}</h2><p>{e(t["about_text"])}</p><p>{e(t["unfinished"])}</p></section>'
-    return shell(lang, all_docs, None, t["home_title"], f'<section class="hero">{intro}</section>', '../', t["home_description"])
+    return shell(lang, all_docs, None, t["home_title"], f'<section class="hero">{intro}</section>', '../', meta_description(lang, None, t["home_title"]))
 
 
 def chapter_page(lang: str, number: int, all_docs: dict) -> str:
@@ -409,7 +412,8 @@ def chapter_page(lang: str, number: int, all_docs: dict) -> str:
     if next_num is not None:
         body_html += f'<a class="pager-link right" href="{prefix}{lang}/{route(next_num)}/"><small>{e(t["next"])} →</small><strong>{e(pages[next_num]["title"])}</strong></a>'
     body_html += '</div>'
-    return shell(lang, all_docs, number, doc['title'], body_html, prefix, doc['title'])
+    description = meta_description(lang, number, doc["title"], doc["source"])
+    return shell(lang, all_docs, number, doc['title'], body_html, prefix, description)
 
 
 def write_page(file: Path, content: str) -> None:
@@ -440,13 +444,22 @@ def build() -> None:
                 target = OUT / 'downloads' / name
                 target.parent.mkdir(parents=True, exist_ok=True)
                 shutil.copy2(src, target)
-    root_html = f'''<!doctype html><html lang="es"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1"><meta http-equiv="refresh" content="0; url={DEFAULT_LANG}/"><title>{e(CONFIG['title'])}</title><link rel="canonical" href="{DEFAULT_LANG}/"></head><body><p><a href="{DEFAULT_LANG}/">Leer en español / Read in Spanish</a></p></body></html>'''
+    root_target = base_url(REPO_URL) + DEFAULT_LANG + "/"
+    root_html = (
+        f'<!doctype html><html lang="{e(DEFAULT_LANG)}"><head><meta charset="utf-8">'
+        f'<meta name="viewport" content="width=device-width, initial-scale=1">'
+        f'<meta http-equiv="refresh" content="0; url={e(DEFAULT_LANG)}/">'
+        f'<title>{e(CONFIG["title"])}</title>'
+        f'<link rel="canonical" href="{e(root_target)}">{google_verification_meta()}'
+        f'</head><body><p><a href="{e(DEFAULT_LANG)}/">Leer en español / Read in Spanish</a></p></body></html>'
+    )
     write_page(OUT / 'index.html', root_html)
     for lang in LANGS:
         write_page(OUT / lang / 'index.html', home_page(lang, all_docs))
         for num in all_docs[lang]:
             write_page(OUT / lang / route(num) / 'index.html', chapter_page(lang,num,all_docs))
         print(f'{lang}: {len(all_docs[lang])} chapters')
+    write_seo_files(OUT, all_docs=all_docs, langs=LANGS, route=route, repo_url=REPO_URL)
     print(f'Generated static site: {OUT}')
 
 

@@ -1,0 +1,61 @@
+{
+  "site_url": "https://sergi-lopez-ruiz.github.io/Nirvana-aguantame-el-cubata/",
+  "author": "Sergio López Ruiz",
+  "google_site_verification": "",
+  "book_titles": {
+    "es": "¿Nirvana? ¡Aguántame el cubata!",
+    "en": "Nirvana? Hold My Beer!",
+    "de": "Nirvana? Halt mal mein Bier!"
+  },
+  "home_descriptions": {
+    "es": "Un libro abierto sobre el Dharma, la meditación, el sufrimiento y la mente condicionada. Explora el budismo desde una perspectiva práctica, crítica y con humor.",
+    "en": "An open book on the Dharma, meditation, suffering, and the conditioned mind. Explore Buddhism through a practical, critical approach with a touch of humor.",
+    "de": "Ein offenes Buch über Dharma, Meditation, Leiden und den bedingten Geist. Entdecke den Buddhismus aus einer praktischen, kritischen Perspektive mit Humor."
+  },
+  "chapter_descriptions": {
+    "es": {
+      "07": "Qué es dukkha en el budismo: comprender el sufrimiento, la insatisfacción y cómo nuestras reacciones pueden añadir malestar a la experiencia.",
+      "08": "Las Cuatro Nobles Verdades explicadas con claridad: dukkha, su origen, su cesación y el camino de práctica en el budismo.",
+      "09": "Descubre la originación dependiente y sus doce eslabones: cómo causas, condiciones y hábitos sostienen el sufrimiento según el Dharma.",
+      "12": "Impermanencia, vacuidad y no-yo: una exploración accesible de anicca, śūnyatā y anattā sin confundir experiencia y metafísica.",
+      "13": "Qué significa nirvana en el budismo: apagar las causas del sufrimiento, distinguir experiencia, doctrina e interpretación funcional.",
+      "14": "El Noble Óctuple Sendero explicado paso a paso, con una lectura práctica basada en ética, concentración e investigación de la experiencia.",
+      "19": "Cómo empezar a meditar: una introducción práctica, ejercicios sencillos y recomendaciones para desarrollar atención sin forzarte.",
+      "26": "Qué son los jhānas: concentración, pīti, ecuanimidad, logros sin forma y límites de las experiencias meditativas extraordinarias.",
+      "27": "Qué significa despertar en el budismo: diez grilletes, cuatro etapas de liberación y una interpretación crítica desde la mente condicionada.",
+      "28": "Theravāda, Mahāyāna, Vajrayāna y Zen: sus diferencias, sus conexiones y qué podemos aprender sin reducirlos a una única doctrina.",
+      "29": "¿Y si nuestro modelo del Dharma está equivocado? Una invitación a cuestionar certezas, revisar hipótesis y aprender con amor y sabiduría."
+    },
+    "en": {
+      "07": "What is dukkha in Buddhism? Explore suffering, dissatisfaction, and the ways our reactions can add distress to experience.",
+      "08": "The Four Noble Truths explained clearly: dukkha, its origin, its cessation, and the Buddhist path of practice.",
+      "09": "Explore dependent origination and its twelve links: how causes, conditions, and habits sustain suffering in Buddhist teaching.",
+      "12": "Impermanence, emptiness, and not-self: an accessible exploration of anicca, śūnyatā, and anattā without metaphysical shortcuts.",
+      "13": "What does nirvana mean in Buddhism? Explore the ending of suffering and the difference between Buddhist doctrine and a functional model.",
+      "14": "A practical guide to the Noble Eightfold Path through ethics, concentration, and investigating experience.",
+      "19": "How to start meditating: simple exercises, a gentle approach to attention, and sensible precautions for beginners.",
+      "26": "What are the jhānas? Explore concentration, pīti, equanimity, formless attainments, and the limits of extraordinary meditation states.",
+      "27": "What is Buddhist awakening? Explore the ten fetters, four stages of liberation, and a critical model of the conditioned mind.",
+      "28": "Theravāda, Mahāyāna, Vajrayāna, and Zen: differences, shared questions, and a bridge between Buddhist traditions.",
+      "29": "What if our model of the Dharma is wrong? An invitation to question assumptions, revise hypotheses, and learn with love and wisdom."
+    },
+    "de": {
+      "07": "Was bedeutet Dukkha im Buddhismus? Über Leiden, Unzufriedenheit und darüber, wie unsere Reaktionen zusätzliches Leid erzeugen können.",
+      "08": "Die Vier Edlen Wahrheiten verständlich erklärt: Dukkha, seine Entstehung, sein Ende und der buddhistische Übungsweg.",
+      "09": "Abhängiges Entstehen und die zwölf Glieder: Wie Ursachen, Bedingungen und Gewohnheiten das Leiden aufrechterhalten.",
+      "12": "Vergänglichkeit, Leerheit und Nicht-Selbst: Anicca, Śūnyatā und Anattā verständlich und ohne vorschnelle metaphysische Schlüsse.",
+      "13": "Was bedeutet Nirvana im Buddhismus? Über das Erlöschen der Ursachen von Leiden und den Unterschied zwischen Lehre und Modell.",
+      "14": "Der Edle Achtfache Pfad verständlich erklärt: Ethik, Konzentration und die Untersuchung der eigenen Erfahrung.",
+      "19": "Meditieren lernen: einfache Übungen, ein behutsamer Einstieg in Aufmerksamkeit und wichtige Hinweise für Anfänger.",
+      "26": "Was sind Jhānas? Über Konzentration, Pīti, Gleichmut, formlose Vertiefungen und die Grenzen außergewöhnlicher Meditationserfahrungen.",
+      "27": "Was bedeutet Erwachen im Buddhismus? Die zehn Fesseln, vier Befreiungsstufen und ein kritisches Modell des bedingten Geistes.",
+      "28": "Theravāda, Mahāyāna, Vajrayāna und Zen: Unterschiede, Verbindungen und ein möglicher Brückenschlag zwischen Traditionen.",
+      "29": "Was, wenn unser Dharma-Modell falsch ist? Eine Einladung, Annahmen zu prüfen, Hypothesen zu ändern und mit Liebe und Weisheit zu lernen."
+    }
+  },
+  "home_title_suffix": {
+    "es": "Dharma, budismo y meditación",
+    "en": "Dharma, Buddhism and Meditation",
+    "de": "Dharma, Buddhismus und Meditation"
+  }
+}
