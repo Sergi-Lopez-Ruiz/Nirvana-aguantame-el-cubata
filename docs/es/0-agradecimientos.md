@@ -2,7 +2,7 @@
 
 A Raquel, el amor de mi vida, que me ha dado otros dos amores, Alejandro y Adrián, por los que merece la pena aprender todo esto. Os quiero.
 
-A mi primera familia: mi padre, Manuel; mi madre, Petri; mi hermano Carlos, su mujer Wendy; mi hermana Sonia y mi sobrino Hugo. Sois geniales.
+A mi primera familia: mi padre, Manuel; mi madre, Petri; mi hermano Carlos, su mujer Wendy, mi hermana Sonia y mi sobrino Hugo. Sois geniales.
 
 A mi familia política: Conchi, Paula y a Tomás, siempre estarás con nosotros.
 
