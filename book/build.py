@@ -41,6 +41,7 @@ LABELS = {
 
 
 def group(num: int) -> int:
+    if num == -1: return -1
     if num == 0: return 0
     if 1 <= num <= 6: return 1
     if 7 <= num <= 13: return 2
@@ -56,13 +57,21 @@ def discover(lang: str) -> dict[int, Path]:
     for path in sorted((DOCS / lang).glob("*.md")):
         match = re.match(r"^(\d{2})[-_]", path.name)
         if not match:
-            print(f"Note: ignoring unnumbered Markdown: {path.relative_to(ROOT)}", file=sys.stderr)
+            if path.name not in ("0-agradecimientos.md", "agradecimientos.md"):
+                print(f"Note: ignoring unnumbered Markdown: {path.relative_to(ROOT)}", file=sys.stderr)
             continue
         number = int(match.group(1))
         group(number)
         if number in result:
             raise ValueError(f"Duplicate chapter number {number:02d} for {lang}")
         result[number] = path
+    canonical = DOCS / lang / "0-agradecimientos.md"
+    legacy = DOCS / lang / "agradecimientos.md"
+    if canonical.is_file() and legacy.is_file():
+        raise ValueError(f"Both {canonical} and {legacy} exist. Delete the old one.")
+    acknowledgements = canonical if canonical.is_file() else legacy
+    if acknowledgements.is_file():
+        result[-1] = acknowledgements
     return dict(sorted(result.items()))
 
 
@@ -83,7 +92,7 @@ def assemble(lang: str, docs: dict[int, Path], version: str, reference: set[int]
     group_seen = set()
     for num, path in docs.items():
         section = group(num)
-        if section not in group_seen and section != 0:
+        if section not in group_seen and section > 0:
             if section <= 5:
                 label = f"{['I','II','III','IV','V'][section-1]} · {lbl['parts'][section-1]}"
             else:
@@ -102,17 +111,19 @@ def assemble(lang: str, docs: dict[int, Path], version: str, reference: set[int]
         if title_ix is not None:
             title = re.sub(r"\s+#+\s*$", "", re.sub(r"^#\s+", "", lines[title_ix])).strip()
             del lines[title_ix]
-        depth = 1 if for_pdf or num == 0 else 2
-        text.append(f"\n{'#'*depth} {title} {{#chapter-{num:02d}}}\n")
+        depth = 1 if for_pdf or num in (-1, 0) else 2
+        text.append(f"\n{'#'*depth} {title} {{#chapter-{'0' if num == -1 else f'{num:02d}'}}}\n")
         chapter_url = (f"https://sergi-lopez-ruiz.github.io/"
-                       f"Nirvana-aguantame-el-cubata/{lang}/{num:02d}/")
+                       f"Nirvana-aguantame-el-cubata/{lang}/"
+                       f"{'0' if num == -1 else f'{num:02d}'}/")
         if for_pdf:
             if num == min(docs):
                 text.append(f"*{lbl['draft']} · {version} · {CONFIG.get('license', 'CC BY-NC-SA 4.0')}*\n")
                 if partial_note:
                     text.append(partial_note)
             # Put the web discussion link near the title, not on a nearly empty final page.
-            text.append(f"[{lbl['online']}]({chapter_url})\n")
+            if num != -1:
+                text.append(f"[{lbl['online']}]({chapter_url})\n")
         # Shift existing subheadings down one level to keep headings nested under the chapter.
         # Prevent changing fenced code contents.
         in_fence = False
@@ -122,7 +133,7 @@ def assemble(lang: str, docs: dict[int, Path], version: str, reference: set[int]
             if not for_pdf and not in_fence and re.match(r"^#{2,5}\s+", line):
                 line = "#" + line
             text.append(line)
-        if not for_pdf:
+        if not for_pdf and num != -1:
             text.append(f"\n[{lbl['online']}]({chapter_url})\n")
     return "\n".join(text) + "\n"
 

@@ -34,14 +34,19 @@ BOOKS = json.loads(BOOKS_FILE.read_text(encoding="utf-8")) if BOOKS_FILE.is_file
 
 UI = {
  "es": {
-  "subtitle":"Una exploración abierta y revisable del Dharma", "home":"Inicio", "contents":"Índice", "read":"Empezar a leer", "chapters":"Capítulos disponibles", "about":"Este proyecto", "about_text":"Una interpretación del Dharma como modelo para explorar la experiencia, abierta a preguntas, críticas y revisiones.", "unfinished":"Texto en desarrollo: no es una edición definitiva.", "change":"Debatir y proponer", "source":"Ver fuente Markdown", "previous":"Anterior", "next":"Siguiente", "in_progress":"Traducción en preparación", "in_progress_text":"Todavía no hay capítulos publicados en este idioma. Puedes leer la edición original en español.", "missing_translation":"No disponible en este idioma", "part0":"Prólogo", "part1":"I · Aprender a mirar", "part2":"II · Un mapa del Dharma", "part3":"III · Aprender a caminar", "part4":"IV · Explorar la experiencia", "part5":"V · Más allá del mapa", "part6":"Apéndices", "feedback":"¿Alguna objeción o propuesta?", "feedback_text":"El contenido es revisable. Contrasta las ideas, señala problemas o plantea una mejora en GitHub Discussions.", "original":"Leer el original en español", "license":"Textos bajo licencia", "edit":"En revisión", "home_title":"Explorar el Dharma sin confundir el mapa con el territorio", "home_description":"Un modelo abierto para observar la experiencia, examinar el sufrimiento y debatir caminos de transformación.", "language":"Idioma", "progress":"Actualmente disponible"},
+  "subtitle":"Una exploración abierta y revisable del Dharma", "home":"Inicio", "contents":"Índice", "read":"Empezar a leer", "chapters":"Capítulos disponibles", "about":"Este proyecto", "about_text":"Una interpretación del Dharma como modelo para explorar la experiencia, abierta a preguntas, críticas y revisiones.", "unfinished":"Texto en desarrollo: no es una edición definitiva.", "change":"Debatir y proponer", "source":"Ver fuente Markdown", "previous":"Anterior", "next":"Siguiente", "in_progress":"Traducción en preparación", "in_progress_text":"Todavía no hay capítulos publicados en este idioma. Puedes leer la edición original en español.", "missing_translation":"No disponible en este idioma", "part-1":"Agradecimientos", "part0":"Prólogo", "part1":"I · Aprender a mirar", "part2":"II · Un mapa del Dharma", "part3":"III · Aprender a caminar", "part4":"IV · Explorar la experiencia", "part5":"V · Más allá del mapa", "part6":"Apéndices", "feedback":"¿Alguna objeción o propuesta?", "feedback_text":"El contenido es revisable. Contrasta las ideas, señala problemas o plantea una mejora en GitHub Discussions.", "original":"Leer el original en español", "license":"Textos bajo licencia", "edit":"En revisión", "home_title":"Explorar el Dharma sin confundir el mapa con el territorio", "home_description":"Un modelo abierto para observar la experiencia, examinar el sufrimiento y debatir caminos de transformación.", "language":"Idioma", "progress":"Actualmente disponible"},
  "en": {
-  "subtitle":"An open, revisable exploration of the Dharma", "home":"Home", "contents":"Contents", "read":"Start reading", "chapters":"Available chapters", "about":"About this project", "about_text":"An interpretation of the Dharma as a model for exploring experience, open to questions, criticism and revision.", "unfinished":"Work in progress: not a final edition.", "change":"Discuss and suggest", "source":"View Markdown source", "previous":"Previous", "next":"Next", "in_progress":"Translation in progress", "in_progress_text":"No chapters have been published in this language yet. You can read the Spanish original.", "missing_translation":"Not available in this language", "part0":"Prologue", "part1":"I · Learning to observe", "part2":"II · A map of the Dharma", "part3":"III · Learning the path", "part4":"IV · Exploring experience", "part5":"V · Beyond the map", "part6":"Appendices", "feedback":"Have a criticism or suggestion?", "feedback_text":"This text is open to revision. Challenge ideas, identify issues or propose improvements on GitHub Discussions.", "original":"Read the original in Spanish", "license":"Text licensed under", "edit":"Under review", "home_title":"Explore the Dharma without mistaking the map for the territory", "home_description":"An open model for observing experience, examining suffering and discussing paths toward transformation.", "language":"Language", "progress":"Currently available"},
+  "subtitle":"An open, revisable exploration of the Dharma", "home":"Home", "contents":"Contents", "read":"Start reading", "chapters":"Available chapters", "about":"About this project", "about_text":"An interpretation of the Dharma as a model for exploring experience, open to questions, criticism and revision.", "unfinished":"Work in progress: not a final edition.", "change":"Discuss and suggest", "source":"View Markdown source", "previous":"Previous", "next":"Next", "in_progress":"Translation in progress", "in_progress_text":"No chapters have been published in this language yet. You can read the Spanish original.", "missing_translation":"Not available in this language", "part-1":"Acknowledgements", "part0":"Prologue", "part1":"I · Learning to observe", "part2":"II · A map of the Dharma", "part3":"III · Learning the path", "part4":"IV · Exploring experience", "part5":"V · Beyond the map", "part6":"Appendices", "feedback":"Have a criticism or suggestion?", "feedback_text":"This text is open to revision. Challenge ideas, identify issues or propose improvements on GitHub Discussions.", "original":"Read the original in Spanish", "license":"Text licensed under", "edit":"Under review", "home_title":"Explore the Dharma without mistaking the map for the territory", "home_description":"An open model for observing experience, examining suffering and discussing paths toward transformation.", "language":"Language", "progress":"Currently available"},
  "de": {
-  "subtitle":"Eine offene, überarbeitbare Erkundung des Dharma", "home":"Startseite", "contents":"Inhalt", "read":"Lesen beginnen", "chapters":"Verfügbare Kapitel", "about":"Über dieses Projekt", "about_text":"Eine Interpretation des Dharma als Modell zur Erforschung der Erfahrung, offen für Fragen, Kritik und Überarbeitung.", "unfinished":"In Arbeit: keine endgültige Ausgabe.", "change":"Diskutieren und vorschlagen", "source":"Markdown-Quelle ansehen", "previous":"Zurück", "next":"Weiter", "in_progress":"Übersetzung in Vorbereitung", "in_progress_text":"In dieser Sprache sind noch keine Kapitel veröffentlicht. Du kannst die spanische Originalfassung lesen.", "missing_translation":"In dieser Sprache nicht verfügbar", "part0":"Prolog", "part1":"I · Wahrnehmen lernen", "part2":"II · Eine Karte des Dharma", "part3":"III · Den Weg gehen lernen", "part4":"IV · Erfahrung erkunden", "part5":"V · Jenseits der Karte", "part6":"Anhänge", "feedback":"Ein Einwand oder Vorschlag?", "feedback_text":"Dieser Text ist offen für Überarbeitungen. Hinterfrage Ideen, benenne Probleme und schlage Verbesserungen auf GitHub Discussions vor.", "original":"Spanisches Original lesen", "license":"Texte lizenziert unter", "edit":"In Bearbeitung", "home_title":"Den Dharma erkunden, ohne die Karte mit dem Gebiet zu verwechseln", "home_description":"Ein offenes Modell zum Beobachten der Erfahrung, zum Untersuchen von Leiden und zum Diskutieren von Veränderung.", "language":"Sprache", "progress":"Derzeit verfügbar"}
+  "subtitle":"Eine offene, überarbeitbare Erkundung des Dharma", "home":"Startseite", "contents":"Inhalt", "read":"Lesen beginnen", "chapters":"Verfügbare Kapitel", "about":"Über dieses Projekt", "about_text":"Eine Interpretation des Dharma als Modell zur Erforschung der Erfahrung, offen für Fragen, Kritik und Überarbeitung.", "unfinished":"In Arbeit: keine endgültige Ausgabe.", "change":"Diskutieren und vorschlagen", "source":"Markdown-Quelle ansehen", "previous":"Zurück", "next":"Weiter", "in_progress":"Übersetzung in Vorbereitung", "in_progress_text":"In dieser Sprache sind noch keine Kapitel veröffentlicht. Du kannst die spanische Originalfassung lesen.", "missing_translation":"In dieser Sprache nicht verfügbar", "part-1":"Danksagung", "part0":"Prolog", "part1":"I · Wahrnehmen lernen", "part2":"II · Eine Karte des Dharma", "part3":"III · Den Weg gehen lernen", "part4":"IV · Erfahrung erkunden", "part5":"V · Jenseits der Karte", "part6":"Anhänge", "feedback":"Ein Einwand oder Vorschlag?", "feedback_text":"Dieser Text ist offen für Überarbeitungen. Hinterfrage Ideen, benenne Probleme und schlage Verbesserungen auf GitHub Discussions vor.", "original":"Spanisches Original lesen", "license":"Texte lizenziert unter", "edit":"In Bearbeitung", "home_title":"Den Dharma erkunden, ohne die Karte mit dem Gebiet zu verwechseln", "home_description":"Ein offenes Modell zum Beobachten der Erfahrung, zum Untersuchen von Leiden und zum Diskutieren von Veränderung.", "language":"Sprache", "progress":"Derzeit verfügbar"}
 }
 
-GROUPS = [(0,0,0),(1,1,6),(2,7,13),(3,14,18),(4,19,25),(5,26,29),(6,90,99)]
+GROUPS = [(-1,-1,-1),(0,0,0),(1,1,6),(2,7,13),(3,14,18),(4,19,25),(5,26,29),(6,90,99)]
+
+
+def route(num: int) -> str:
+    """Stable URLs; 0 is reserved for acknowledgements, 00 for prologue."""
+    return "0" if num == -1 else f"{num:02d}"
 
 
 def e(x: object) -> str:
@@ -79,7 +84,8 @@ def collect() -> dict[str,dict[int,dict]]:
             for p in sorted(path.glob("*.md")):
                 match = re.match(r"^(\d{2})[-_]", p.name)
                 if not match:
-                    print(f"Skipping file without numerical prefix: {p}", file=sys.stderr)
+                    if p.name not in ("0-agradecimientos.md", "agradecimientos.md"):
+                        print(f"Skipping file without numerical prefix: {p}", file=sys.stderr)
                     continue
                 num = int(match.group(1))
                 part_for(num)  # Avoid silently omitting ungrouped chapters from the index.
@@ -87,6 +93,17 @@ def collect() -> dict[str,dict[int,dict]]:
                     raise ValueError(f"Duplicate chapter number {num:02} for {lang}")
                 source = p.read_text(encoding="utf-8-sig")
                 pages[num] = {"number": num, "title": extract_title(source, p.stem), "source": source, "path": p}
+        # Acknowledgements display as 0; prologue displays as 00.
+        # Support the previous name during migration, but do not permit duplicates.
+        canonical = path / "0-agradecimientos.md"
+        legacy = path / "agradecimientos.md"
+        if canonical.is_file() and legacy.is_file():
+            raise ValueError(f"Both {canonical} and {legacy} exist. Delete the old one.")
+        acknowledgements = canonical if canonical.is_file() else legacy
+        if acknowledgements.is_file():
+            source = acknowledgements.read_text(encoding="utf-8-sig")
+            pages[-1] = {"number": -1, "title": extract_title(source, "Agradecimientos"),
+                         "source": source, "path": acknowledgements}
         all_docs[lang] = dict(sorted(pages.items()))
     if not all_docs[DEFAULT_LANG]:
         raise SystemExit(f"No Markdown chapters in docs/{DEFAULT_LANG}/")
@@ -106,7 +123,7 @@ def nav(lang: str, all_docs: dict, current: int | None, prefix: str) -> str:
             num = doc["number"]
             active = ' class="active" aria-current="page"' if num == current else ''
             name = re.sub(r"^\d+\.\s*", "", doc["title"])
-            out.append(f'<a{active} href="{e(prefix)}{e(lang)}/{num:02d}/"><span class="chapter-number">{num:02d}</span><span>{e(name)}</span></a>')
+            out.append(f'<a{active} href="{e(prefix)}{e(lang)}/{route(num)}/"><span class="chapter-number">{("0" if num == -1 else f"{num:02d}")}</span><span>{e(name)}</span></a>')
         out.append('</div>')
     out.append('</nav>')
     return "".join(out)
@@ -130,13 +147,13 @@ def render_markdown(text: str, lang: str, doc_path: Path, all_docs: dict, prefix
                     target = (doc_path.parent / unquote(parts.path)).resolve()
                     if child.type == "link_open" and parts.path.lower().endswith(".md"):
                         num_match = re.match(r"^(\d{2})[-_]", target.name)
-                        if num_match and target.is_relative_to(DOCS):
-                            number = int(num_match.group(1))
-                            if number in all_docs[lang]:
-                                new_href = f"{prefix}{lang}/{number:02d}/"
-                                if parts.fragment:
-                                    new_href += "#" + quote(parts.fragment)
-                                child.attrSet(attribute, new_href)
+                        number = (-1 if target.name in ("0-agradecimientos.md", "agradecimientos.md") else
+                                  int(num_match.group(1)) if num_match else None)
+                        if number is not None and target.is_relative_to(DOCS) and number in all_docs[lang]:
+                            new_href = f"{prefix}{lang}/{route(number)}/"
+                            if parts.fragment:
+                                new_href += "#" + quote(parts.fragment)
+                            child.attrSet(attribute, new_href)
                     elif target.is_relative_to(DOCS / "assets"):
                         rel = target.relative_to(DOCS / "assets").as_posix()
                         if target.is_file():
@@ -158,7 +175,7 @@ def language_options(lang: str, current: int | None, all_docs: dict, prefix: str
     for other in LANGS:
         translated = current is None or current in all_docs[other]
         if translated:
-            url = f"{prefix}{other}/" if current is None else f"{prefix}{other}/{current:02d}/"
+            url = f"{prefix}{other}/" if current is None else f"{prefix}{other}/{route(current)}/"
             css = "lang-option selected" if lang == other else "lang-option"
             menu.append(f'<a class="{css}" lang="{other}" hreflang="{other}" href="{e(url)}">{e(names.get(other,other))}</a>')
         else:
@@ -239,7 +256,7 @@ def home_page(lang: str, all_docs: dict) -> str:
     t = UI[lang]
     pages = all_docs[lang]
     has_chapters = bool(pages)
-    first_url = f"../{lang}/{next(iter(pages)):02d}/" if has_chapters else "../es/"
+    first_url = f"../{lang}/{route(next(iter(pages)))}/" if has_chapters else "../es/"
     intro = f'''<div class="eyebrow">{e(t['edit'])} · {e(VERSION)}</div>
 <h1 class="hero-title">{e(t['home_title'])}</h1>
 <p class="hero-description">{e(t['home_description'])}</p>
@@ -264,7 +281,7 @@ def home_page(lang: str, all_docs: dict) -> str:
     else:
         intro += f'<p class="section-heading">{e(t["chapters"])} <span>{len(pages)}</span></p><div class="chapter-cards">'
         for num,doc in pages.items():
-            intro += f'<a class="chapter-card" href="../{lang}/{num:02d}/"><span class="chapter-number">{num:02d}</span><span>{e(doc["title"])}</span><span class="card-arrow">↗</span></a>'
+            intro += f'<a class="chapter-card" href="../{lang}/{route(num)}/"><span class="chapter-number">{("0" if num == -1 else f"{num:02d}")}</span><span>{e(doc["title"])}</span><span class="card-arrow">↗</span></a>'
         intro += '</div>'
     intro += f'<section class="about-panel"><h2>{e(t["about"])}</h2><p>{e(t["about_text"])}</p><p>{e(t["unfinished"])}</p></section>'
     return shell(lang, all_docs, None, t["home_title"], f'<section class="hero">{intro}</section>', '../', t["home_description"])
@@ -289,11 +306,11 @@ def chapter_page(lang: str, number: int, all_docs: dict) -> str:
     body_html += f'<div class="feedback-panel"><div class="feedback-icon">↗</div><div><h2>{e(t["feedback"])}</h2><p>{e(t["feedback_text"])}</p><div class="feedback-links"><a href="{e(REPO_URL)}/discussions" target="_blank" rel="noopener noreferrer">{e(t["change"])} ↗</a><a href="{e(source_url)}" target="_blank" rel="noopener noreferrer">{e(t["source"])} ↗</a></div></div></div>'
     body_html += '<div class="chapter-pager">'
     if prev_num is not None:
-        body_html += f'<a class="pager-link" href="{prefix}{lang}/{prev_num:02d}/"><small>← {e(t["previous"])}</small><strong>{e(pages[prev_num]["title"])}</strong></a>'
+        body_html += f'<a class="pager-link" href="{prefix}{lang}/{route(prev_num)}/"><small>← {e(t["previous"])}</small><strong>{e(pages[prev_num]["title"])}</strong></a>'
     else:
         body_html += '<span></span>'
     if next_num is not None:
-        body_html += f'<a class="pager-link right" href="{prefix}{lang}/{next_num:02d}/"><small>{e(t["next"])} →</small><strong>{e(pages[next_num]["title"])}</strong></a>'
+        body_html += f'<a class="pager-link right" href="{prefix}{lang}/{route(next_num)}/"><small>{e(t["next"])} →</small><strong>{e(pages[next_num]["title"])}</strong></a>'
     body_html += '</div>'
     return shell(lang, all_docs, number, doc['title'], body_html, prefix, doc['title'])
 
@@ -328,7 +345,7 @@ def build() -> None:
     for lang in LANGS:
         write_page(OUT / lang / 'index.html', home_page(lang, all_docs))
         for num in all_docs[lang]:
-            write_page(OUT / lang / f'{num:02d}' / 'index.html', chapter_page(lang,num,all_docs))
+            write_page(OUT / lang / route(num) / 'index.html', chapter_page(lang,num,all_docs))
         print(f'{lang}: {len(all_docs[lang])} chapters')
     print(f'Generated static site: {OUT}')
 
