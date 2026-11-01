@@ -23,3 +23,21 @@
   \PackageError{nirvana-logo}{Cannot add logo to PDF title page}{Check the book documentclass and LaTeX version}%
 }
 \makeatother
+
+% License notice belongs on the existing title page; no extra blank page.
+% The version and the original author name stay untouched.
+\makeatletter
+\patchcmd{\maketitle}{\@thanks}{%
+  \@thanks
+  \begin{center}
+  \footnotesize
+  NIRVANA_LICENSE_HEADING\par
+  \href{NIRVANA_LICENSE_DEED}{NIRVANA_LICENSE_NAME}\par
+  \href{NIRVANA_LICENSE_REPO}{NIRVANA_LICENSE_REPO_LABEL}
+  \end{center}
+}{%
+  \typeout{NIRVANA-LICENSE: inserted license on title page}%
+}{%
+  \PackageError{nirvana-license}{Cannot add license to PDF title page}{Check the book documentclass and LaTeX version}%
+}
+\makeatother

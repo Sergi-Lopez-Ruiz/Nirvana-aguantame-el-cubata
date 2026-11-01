@@ -21,6 +21,22 @@ ROOT = Path(__file__).resolve().parent.parent
 DOCS = ROOT / "docs"
 BOOK = ROOT / "book"
 CONFIG = json.loads((ROOT / "site/config.json").read_text(encoding="utf-8"))
+REPO_LICENSE_URL = CONFIG["repo_url"].rstrip("/") + "/blob/main/LICENSE.md"
+LICENSE_DEED_URL = CONFIG["license_url"]
+LICENSE_NAME = CONFIG.get("license", "CC BY-NC-SA 4.0")
+LICENSE_LABELS = {
+    "es": ("Este libro se distribuye bajo la licencia", "Texto completo en LICENSE.md (GitHub)"),
+    "en": ("This book is distributed under the license", "Full text in LICENSE.md (GitHub)"),
+    "de": ("Dieses Buch wird unter der Lizenz veröffentlicht", "Vollständiger Text in LICENSE.md (GitHub)"),
+}
+
+
+def license_notice(lang: str) -> str:
+    """Visible, clickable license notice for EPUB and PDF chapters."""
+    heading, repo_label = LICENSE_LABELS.get(lang, LICENSE_LABELS["en"])
+    return (f"{heading} [{LICENSE_NAME}]({LICENSE_DEED_URL}). "
+            f"[{repo_label}]({REPO_LICENSE_URL}).")
+
 
 
 def find_logo() -> Path:
@@ -123,7 +139,7 @@ def assemble(lang: str, docs: dict[int, Path], version: str, reference: set[int]
     # In a PDF, content before the first chapter would create a nearly empty page.
     # Place edition metadata under the first chapter title instead.
     text = [] if for_pdf else [f"*{version_caption(lang, version)}*\n",
-                               f"*{CONFIG.get('license', 'CC BY-NC-SA 4.0')}*\n"]
+                               f"{license_notice(lang)}\n"]
     partial_note = ""
     if not complete:
         missing = ", ".join(f"{x:02d}" for x in sorted(reference - set(docs)))
@@ -172,7 +188,7 @@ def assemble(lang: str, docs: dict[int, Path], version: str, reference: set[int]
                        f"{'0' if num == -1 else f'{num:02d}'}/")
         if for_pdf:
             if num == min(docs):
-                text.append(f"*{version_caption(lang, version)} · {CONFIG.get('license', 'CC BY-NC-SA 4.0')}*\n")
+                text.append(f"*{version_caption(lang, version)}*\n\n{license_notice(lang)}\n")
                 if partial_note:
                     text.append(partial_note)
             # Put the web discussion link near the title, not on a nearly empty final page.
@@ -255,10 +271,17 @@ def main() -> None:
             # Pandoc's default book-class title page does not support `titlegraphic`.
             logo_tex = "\\detokenize{" + logo.as_posix() + "}"
             title_header = temp / "header-with-logo.tex"
-            title_header.write_text(
-                (BOOK / "header.tex").read_text(encoding="utf-8").replace("NIRVANA_LOGO_FILE", logo_tex),
-                encoding="utf-8",
-            )
+            license_heading, license_repo_label = LICENSE_LABELS.get(lang, LICENSE_LABELS["en"])
+            # These fixed strings only contain ASCII letters/spaces; the URLs use
+            # hyperref's \detokenize to avoid TeX special-character problems.
+            title_tex = (BOOK / "header.tex").read_text(encoding="utf-8")
+            title_tex = title_tex.replace("NIRVANA_LOGO_FILE", logo_tex)
+            title_tex = title_tex.replace("NIRVANA_LICENSE_HEADING", license_heading)
+            title_tex = title_tex.replace("NIRVANA_LICENSE_NAME", LICENSE_NAME)
+            title_tex = title_tex.replace("NIRVANA_LICENSE_DEED", "\\detokenize{" + LICENSE_DEED_URL + "}")
+            title_tex = title_tex.replace("NIRVANA_LICENSE_REPO_LABEL", license_repo_label)
+            title_tex = title_tex.replace("NIRVANA_LICENSE_REPO", "\\detokenize{" + REPO_LICENSE_URL + "}")
+            title_header.write_text(title_tex, encoding="utf-8")
             common = ["pandoc", str(md), "--from=markdown+raw_html", "--standalone", "--toc", "--toc-depth=2", "--resource-path", f"{DOCS / lang}:{DOCS / 'assets'}:{ROOT}"]
             run(["pandoc", str(md_pdf), "--from=markdown+raw_tex+raw_html", "--standalone", "--toc", "--toc-depth=1", "--resource-path", f"{DOCS / lang}:{DOCS / 'assets'}:{ROOT}"] + ["--to=pdf", "--pdf-engine=xelatex", "-V", "documentclass=book", "-V", "classoption=oneside,openany",
                 "-V", "papersize=a5", "-V", "mainfont=DejaVu Serif",
