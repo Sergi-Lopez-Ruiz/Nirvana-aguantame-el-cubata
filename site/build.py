@@ -358,7 +358,7 @@ def chapter_page(lang: str, number: int, all_docs: dict) -> str:
     discussion_button = (
         f'<div class="chapter-discussion"><a class="chapter-discuss-link" href="{e(target_discussion)}" '
         f'target="_blank" rel="noopener noreferrer">💬 {e(t["discuss_chapter"])} ↗</a>'
-        f'<small>{e(t["discuss_hint"])}</small></div>'
+        f'</div>'
         if target_discussion else ""
     )
     # The title is already in Markdown; do not duplicate it.
