@@ -18,6 +18,8 @@ A todos mis amigos de Esplugues de Llobregat, Erlangen y Candás (que mola más)
 
 Y a todas las personas que he conocido a lo largo de mi vida, que me han acompañado, enseñado, querido y ayudado a llegar hasta aquí.
 
+A ChatGPT (OpenAI) y a GitHub por la ayuda e infraestructura.
+
 **Todos vosotros sois mis causas y condiciones.**
 
 Gracias por hacer de mí lo que soy.
