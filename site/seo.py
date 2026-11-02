@@ -175,6 +175,9 @@ def write_seo_files(output: Path, *, all_docs: dict, langs: list[str], route, re
                     "hreflang": other,
                     "href": canonical(base, other, current, route),
                 })
+    # Pretty-print sitemap.xml for easier inspection in a browser or text editor.
+    # XML structure and Google Search Console compatibility stay unchanged.
+    ET.indent(root, space="  ")
     ET.ElementTree(root).write(output / "sitemap.xml", encoding="utf-8", xml_declaration=True)
     # NOTE: for a GitHub Pages project URL (under /repository/), robots.txt in
     # that subdirectory is NOT the domain-wide robots.txt Google reads.
