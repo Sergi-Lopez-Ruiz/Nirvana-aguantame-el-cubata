@@ -31,14 +31,6 @@ LICENSE_LABELS = {
 }
 
 
-def license_notice(lang: str) -> str:
-    """Visible, clickable license notice for EPUB and PDF chapters."""
-    heading, repo_label = LICENSE_LABELS.get(lang, LICENSE_LABELS["en"])
-    return (f"{heading} [{LICENSE_NAME}]({LICENSE_DEED_URL}). "
-            f"[{repo_label}]({REPO_LICENSE_URL}).")
-
-
-
 def find_logo() -> Path:
     """Locate the same source image used by the web header."""
     candidates = (ROOT / "logo.png", ROOT / "site" / "static" / "logo.png", DOCS / "assets" / "logo.png")
@@ -140,16 +132,13 @@ def assemble(lang: str, docs: dict[int, Path], version: str, reference: set[int]
     """Generate the book; PDF uses real LaTeX chapters, EPUB retains the nested navigation."""
     lbl = LABELS.get(lang, LABELS["en"])
     complete = set(docs) == reference
-    # In a PDF, content before the first chapter would create a nearly empty page.
-    # Place edition metadata under the first chapter title instead.
-    text = [] if for_pdf else [f"*{version_caption(lang, version)}*\n",
-                               f"{license_notice(lang)}\n"]
+    # Edition metadata belongs on the title page / in EPUB metadata, never
+    # inside the acknowledgements or ahead of the first chapter.
+    text: list[str] = []
     partial_note = ""
     if not complete:
         missing = ", ".join(f"{x:02d}" for x in sorted(reference - set(docs)))
         partial_note = f"> **{lbl['partial']}**. {missing}\n"
-        if not for_pdf:
-            text.append(partial_note)
     group_seen = set()
     for num, path in docs.items():
         section = group(num)
@@ -193,14 +182,10 @@ def assemble(lang: str, docs: dict[int, Path], version: str, reference: set[int]
         chapter_url = (f"https://sergi-lopez-ruiz.github.io/"
                        f"Nirvana-aguantame-el-cubata/{lang}/"
                        f"{'0' if num == -1 else f'{num:02d}'}/")
-        if for_pdf:
-            if num == min(docs):
-                text.append(f"*{version_caption(lang, version)}*\n\n{license_notice(lang)}\n")
-                if partial_note:
-                    text.append(partial_note)
-            # Put the web discussion link near the title, not on a nearly empty final page.
-            if num != -1:
-                text.append(f"[{lbl['online']}]({chapter_url})\n")
+        # Keep PDF chapters print-ready: no web discussion links.
+        # The version and license are provided on the title page / via EPUB metadata.
+        if num == min(docs) and partial_note:
+            text.append(partial_note)
         # Shift existing subheadings down one level to keep headings nested under the chapter.
         # Prevent changing fenced code contents.
         in_fence = False
