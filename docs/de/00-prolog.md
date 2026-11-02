@@ -121,3 +121,14 @@ Ich weiß nicht, was du in diesem Buch finden wirst.
 Aber ich würde mich freuen, wenn du es am Ende mit dem Wunsch zuschlägst, genauer hinzusehen.
 
 Willkommen.
+
+> _„Vielleicht, nur vielleicht, sind wir allein._
+> 
+> _Aber eines ist sicher, ganz sicher:_  
+> _Wir sind zusammen.“_
+
+> _„Wenn du es baust, wird er kommen.“_
+> 
+> **_(Und mit „er“ bist du gemeint.)_**
+
+_— Inspiriert von „Feld der Träume“_

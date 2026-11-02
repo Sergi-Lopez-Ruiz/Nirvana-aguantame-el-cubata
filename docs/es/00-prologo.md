@@ -121,3 +121,15 @@ No sé qué encontrarás en este libro.
 Pero me gustaría que, cuando lo cerrases, tuvieses ganas de mirar.
 
 Bienvenido
+
+
+> _«Quizá, solo quizá, estamos solos._
+> 
+> _Pero lo que es seguro, absolutamente seguro,_  
+> _es que estamos juntos»._
+
+> _«Si lo construyes, él vendrá»._
+> 
+> **_(Y ese «él» eres tú)._**
+
+_— Inspirado en «Campo de sueños»_

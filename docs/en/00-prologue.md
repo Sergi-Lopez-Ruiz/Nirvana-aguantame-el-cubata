@@ -121,3 +121,14 @@ I don't know what you'll find in this book.
 But I'd like you to finish it wanting to look.
 
 Welcome.
+
+> _“Maybe, just maybe, we are alone._
+> 
+> _But one thing is certain, absolutely certain:_  
+> _we are together.”_
+
+> _“If you build it, he will come.”_
+> 
+> **_(And that “he” is you.)_**
+
+_— Inspired by “Field of Dreams”_
