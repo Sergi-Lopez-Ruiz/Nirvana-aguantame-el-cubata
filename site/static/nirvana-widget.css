@@ -34,7 +34,7 @@
  .nirvana-widget.n-gold .n-node{animation:none}
 }
 /* Placement inside the home-page hero, above the reading buttons. */
-.nirvana-showcase{display:flex;justify-content:flex-start;margin:0 0 24px;}
-.nirvana-showcase .nirvana-widget{max-width:330px;margin:0;padding:0 8px 2px;}
+.nirvana-showcase{display:flex;justify-content:center;align-items:center;width:100%;margin:0 0 24px;}
+.nirvana-showcase .nirvana-widget{width:100%;max-width:330px;margin:0 auto;padding:0 8px 2px;}
 @media(max-width:420px){.nirvana-showcase .nirvana-widget{max-width:295px;}}
 
