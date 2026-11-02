@@ -1,4 +1,4 @@
-# Appendix — The Higher Jhānas: A Journey to Nowhere
+# Third Appendix — The Higher Jhānas: A Journey to Nowhere
 
 *A hypothesis dreamed up in the shower. Without ever having been there. And without being particularly keen to go.*
 

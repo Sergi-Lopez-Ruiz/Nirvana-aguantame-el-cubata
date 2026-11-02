@@ -1,4 +1,4 @@
-# Apéndice — Las jhānas superiores: viaje a ninguna parte
+# Tercer Apéndice — Las jhānas superiores: viaje a ninguna parte
 
 *Una hipótesis formulada bajo la ducha. Sin haber estado allí. Y sin demasiadas ganas de ir.*
 

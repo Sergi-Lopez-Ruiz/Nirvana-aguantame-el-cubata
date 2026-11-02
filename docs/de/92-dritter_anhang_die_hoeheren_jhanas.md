@@ -1,4 +1,4 @@
-# Anhang — Die höheren Jhānas: eine Reise ins Nirgendwo
+# Dritter Anhang — Die höheren Jhānas: eine Reise ins Nirgendwo
 
 *Eine Hypothese, die mir unter der Dusche eingefallen ist. Ohne je dort gewesen zu sein. Und ohne besondere Lust, dorthin zu reisen.*
 
