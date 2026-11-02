@@ -29,6 +29,16 @@ VERSION_RAW = os.environ.get("SITE_VERSION", "V0.1.0").strip() or "V0.1.0"
 VERSION_MATCH = re.fullmatch(r"[vV](\d+)\.(\d+)\.(\d+)", VERSION_RAW)
 VERSION = "V" + ".".join(VERSION_MATCH.groups()) if VERSION_MATCH else VERSION_RAW
 LANGS = list(dict.fromkeys(CONFIG["languages"]))
+# Plausible: identificador oficial facilitado por el propietario de la web.
+# Se incluyen EPUB y los tipos habituales; no hacen falta scripts de descarga adicionales.
+PLAUSIBLE_SNIPPET = """<!-- Privacy-friendly analytics by Plausible -->
+<script async src="https://plausible.io/js/pa-8SeuB_vwIkN25D-MUVvLx.js"></script>
+<script>
+  window.plausible=window.plausible||function(){(plausible.q=plausible.q||[]).push(arguments)},plausible.init=plausible.init||function(i){plausible.o=i||{}};
+  plausible.init({fileDownloads: {fileExtensions: ["pdf", "epub", "zip", "xlsx", "docx", "txt", "rtf", "csv", "exe", "key", "pps", "ppt", "pptx", "7z", "pkg", "rar", "gz", "avi", "mov", "mp4", "mpeg", "wmv", "midi", "mp3", "wav", "wma", "dmg"]}})
+</script>
+"""
+
 DEFAULT_LANG = CONFIG["default_language"]
 REPO_URL = CONFIG["repo_url"].rstrip("/")
 LICENSE_URL = CONFIG["license_url"]
@@ -311,15 +321,19 @@ def shell(lang: str, all_docs: dict, current: int | None, title: str, body: str,
     community_label = t["discuss_chapter"] if topic else t["change"]
     widget_style = f'<link rel="stylesheet" href="{e(prefix)}assets/nirvana-widget.css">' if current is None else ''
     widget_script = f'<script defer src="{e(prefix)}assets/nirvana-widget.js"></script>' if current is None else ''
+    # El rastreador del cerebro se carga solo en portada, sin tocar nirvana-widget.js.
+    widget_analytics = f'<script defer src="{e(prefix)}assets/nirvana-analytics.js"></script>' if current is None else ''
     return f'''<!doctype html>
 <html lang="{lang}">
 <head>
 <meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1">
 <meta name="color-scheme" content="light dark">
 {seo_head}
+{PLAUSIBLE_SNIPPET}
 <link rel="stylesheet" href="{e(prefix)}assets/style.css">
 {widget_style}
 {widget_script}
+{widget_analytics}
 </head>
 <body>
 <a class="skip" href="#main">Skip to content</a>
